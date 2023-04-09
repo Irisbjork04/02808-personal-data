@@ -38,6 +38,7 @@ const styles = StyleSheet.create({
     },
     logo: {
       flex: 1,
+      paddingLeft: 20,
       flexDirection: 'row',
     },
     image: {
@@ -45,7 +46,7 @@ const styles = StyleSheet.create({
       resizeMode: 'cover',
       width: 30,
       height: 50,
-      justifyContent: 'center',
+      justifyContent: 'space-around',
     },
     text: {
       fontSize: 20

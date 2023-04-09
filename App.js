@@ -1,7 +1,6 @@
 
 import { StatusBar } from 'expo-status-bar'; //This is a component that we can use to show the status bar at the top of the screen
 import { StyleSheet, Text, View, Image, SafeAreaView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';  //Importing the components we need
-import ModalSleepHrsAdded from "./modals/ModalSleepHrsAdded";
 import {useState,useEffect } from 'react';
 import LayoutScreen from "./screens/layout";
 
@@ -46,10 +45,7 @@ const onModalClose = () => {
               <TouchableOpacity onPress={onAddSticker}>  
                   <Image  source={require("./assets/app_welcome_text.png")} />
               </TouchableOpacity>
-                  <ModalSleepHrsAdded isVisible={isModalVisible} onClose={onModalClose} >
-
-                  </ModalSleepHrsAdded>
-                  <StatusBar style="auto" />
+            <StatusBar style="auto" />
           </SafeAreaView>
       </ImageBackground>
     );
