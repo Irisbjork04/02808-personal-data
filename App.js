@@ -2,11 +2,8 @@
 import { StatusBar } from 'expo-status-bar'; //This is a component that we can use to show the status bar at the top of the screen
 import { StyleSheet, Text, View, Image, SafeAreaView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';  //Importing the components we need
 import {useState,useEffect } from 'react';
+import { RootSiblingParent } from 'react-native-root-siblings';
 import LayoutScreen from "./screens/layout";
-
-
-
-
 
 //In react native we dont use raw html -> view is like <div
 //SafeAreaView adds padding and makes sure that our content isn't cut.
@@ -52,12 +49,13 @@ const onModalClose = () => {
   }
   else {
     return (
-      <View style={styles.layout}>
-        <LayoutScreen></LayoutScreen>
-      </View>
+      <RootSiblingParent>
+        <View style={styles.layout}>
+          <LayoutScreen></LayoutScreen>
+        </View>
+      </RootSiblingParent>
     );
   }
-  
 }
 
 const styles = StyleSheet.create({

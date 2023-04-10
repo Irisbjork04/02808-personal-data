@@ -6,7 +6,7 @@ import ModalEpisodeAdd from '../modals/ModalEpisode';
 import ModalSleepHrsAdd from '../modals/ModalSleep';
 import ModalNotesAdd from '../modals/ModalNotes';
 
-const BottomStack = ({ navigation }) => {
+const BottomStack = ({ navigation, showToast, setToastContent }) => {
 
     const [showAppOptions, setShowAppOptions] = useState(false);
     const [isEpisodeModalVisible, setIsEpisodeModalVisible] = useState(false);
@@ -53,7 +53,7 @@ const BottomStack = ({ navigation }) => {
             <TouchableOpacity onPress={onAddEpisodeModal}>    
                 <Image source={require("../assets/bigiconepi.png")} style={styles.image} />        
             </TouchableOpacity>
-            <ModalEpisodeAdd isVisible={isEpisodeModalVisible} onClose={onEpisodeModalClose} />
+            <ModalEpisodeAdd isVisible={isEpisodeModalVisible} onClose={onEpisodeModalClose} showToast={showToast} setToastContent={setToastContent} />
           </View>
           
           <View style={styles.sleep}>

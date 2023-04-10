@@ -2,11 +2,41 @@ import { StatusBar } from 'expo-status-bar'; //This is a component that we can u
 import React, { Component, useState } from 'react';
 import { StyleSheet, TextInput, Text, View, Image, TouchableOpacity, SafeAreaView, ImageBackground, Modal, Pressable , Button} from 'react-native';  //Importing the components we need
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
 
-export default function ModalEpisodeAdd({ isVisible, children, onClose }) {
+export default function ModalEpisodeAdd({ isVisible, children, onClose, showToast, setToastContent  }) {
+
     const [textvalue, onChangeText] = useState('Type here to take your note!');
-        
+    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [datePickerVisible, setDatePickerVisible] = useState(false);
+
+    const showDatePicker = () => {
+      setDatePickerVisible(true);
+    };
+
+    const hideDatePicker = () => {
+      setDatePickerVisible(false);
+    };
+
+    const handleConfirm = (date) => {
+      setSelectedDate(date);
+      hideDatePicker();
+    };
+
+    const onButtonPress = () => {
+      setToastContent(toastContent );
+      showToast();  
+      onClose();
+    };
+
+    const toastContent = (
+      <View style={styles.episodetoast}>
+        {/* <Text style={styles.episodetoasttext}>Episode added!</Text> */}
+        <Image source={require("../assets/episodetoasticon.png")} style={styles.toastimage}/>
+      </View>
+    );
 
     return (
       <Modal animationType="slide" transparent={true} visible={isVisible}>
@@ -24,7 +54,15 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose }) {
                 <View style={styles.episodetime}>
                     <Text style={styles.labeltext}>Episode Time</Text>
                     <View style={styles.timefield}>
-                        <Text style={styles.labeltext}>Episode Time</Text>
+                      <Text style={styles.timelabel}>{selectedDate ? selectedDate.toLocaleTimeString() : 'No time selected'}</Text>
+                      <Button title="Edit" color= "#735BF2" paddingLeft="8" onPress={showDatePicker} style={styles.timebutton} />
+                        <DateTimePickerModal
+                          date={selectedDate}
+                          isVisible={datePickerVisible}
+                          mode="time"
+                          onConfirm={handleConfirm}
+                          onCancel={hideDatePicker}
+                        /> 
                     </View>
                 </View>
             </View>
@@ -44,7 +82,7 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose }) {
             </View>
 
             <View style={styles.buttondiv}>
-                <Button  title="Save" color="#735BF2" />
+                <Button  title="Save" color="#735BF2" onPress={onButtonPress} />                
             </View>
             
           </View>
@@ -87,13 +125,7 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose }) {
         color: '#8348EF',
         fontSize: 14,
         paddingHorizontal: 30,
-    },
-    labeltext: {
-        color: '#2A1342',
-        fontSize: 16,
-        paddingHorizontal: 10,
-        marginTop: 10,
-    },
+    },   
     pickerContainer: {
       flexDirection: 'row',
       justifyContent: 'center',
@@ -106,16 +138,11 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose }) {
         height: 22,
         resizeMode: 'cover',
     },
-    episodetime: {
-        flex: 1,
-        paddingLeft: 20,
-        flexDirection: 'row',
-    },
-    timefield: {
-        flex: 12,
-        // paddingLeft: 20,
-        flexDirection: 'row',
-    },
+    toastimage: {
+      width: 100,
+      height: 100,
+      resizeMode: 'cover',
+    },    
     multilinetextinput: {
         // width:200,
         borderRadius : 10,
@@ -138,4 +165,52 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose }) {
         paddingRight: 20,
         flex:1,
       },
+    episodetoast: {
+      width: 200,
+      height: 200,
+      borderRadius: 10,
+      justifyContent: 'center',
+      alignItems: "center",
+      // paddingHorizontal: 8,
+      // paddingVertical: 8,
+      // paddingLeft: 20,
+      // paddingRight: 20,
+      flex:1,
+    },  
+    episodetime: {
+      flex: 1,
+      paddingLeft: 20,
+      flexDirection: 'row',      
+      alignItems: 'flex-start',
+    },
+    labeltext: {
+      color: '#2A1342',
+      fontSize: 16,
+      paddingHorizontal: 10,
+      marginTop: 10,
+      flex: 6,
+    },
+    timefield: {
+        flex: 8,
+        paddingLeft: 70,
+        paddingRight: 20,
+        flexDirection: 'row',
+        // padding: 20,
+        // flex: 1,
+        display: 'flex',
+        justifyContent: "center",
+    },
+    timelabel: { 
+      flex: 6,
+      fontSize: 16, 
+      fontWeight: 'bold',
+      marginTop: 10,
+    },      
+    timebutton: { 
+        flex: 4,
+        justifyContent: "start",
+        alignSelf: 'flex-start',
+        fontSize: 16, 
+        // paddingVertical: 6,
+    }
   });
