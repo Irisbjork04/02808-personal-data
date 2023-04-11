@@ -19,7 +19,7 @@ export default function TopStack() {
             <UpperStack.Navigator
               initialRouteName="Day"
               screenOptions={{
-                activeTintColor: '#42f44b',
+                activeTintColor: '#6028FF',
             }}>
               <UpperStack.Screen name="Day" component={DayView} />
               <UpperStack.Screen name="Week" component={WeekView} />
