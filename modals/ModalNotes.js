@@ -7,13 +7,20 @@ export default function ModalNotesAdd({ isVisible, children, onClose }) {
       <Modal animationType="slide" transparent={true} visible={isVisible}>
         <View style={styles.modalContent}>
           <View style={styles.titleContainer}>
-            <Text style={styles.title}>Add Notes</Text>
+            <Text style={styles.title}>Today's Notes</Text>
+            <Pressable onPress={onClose} style={styles.addView}>
+              {/* <MaterialIcons name="close" color="#fff" size={22} /> */}
+              <Image source={require("../assets/addIcon.png")} style={styles.image} />
+            </Pressable>
             <Pressable onPress={onClose}>
               {/* <MaterialIcons name="close" color="#fff" size={22} /> */}
               <Image source={require("../assets/closeIcon.png")} style={styles.image} />
             </Pressable>
           </View>
-          {children}
+          <View style={styles.formContainer}>
+            <Text style={styles.labeltext}>Viewing history of your notes will be available on T-Miinus version 2.0</Text>          
+          </View>
+          {/* {children} */}
         </View>
       </Modal>
     );
@@ -21,16 +28,19 @@ export default function ModalNotesAdd({ isVisible, children, onClose }) {
 
   const styles = StyleSheet.create({
     modalContent: {
-      height: '25%',
+      height: '40%',
       width: '100%',
+      borderTopWidth: 1,
+      borderTopColor: '#E8F3F1',
       backgroundColor: '#ffffff',
       borderTopRightRadius: 18,
       borderTopLeftRadius: 18,
       position: 'absolute',
       bottom: 0,
+      flex: 1,
+      flexDirection: 'column',
     },
     titleContainer: {
-      height: '16%',
       backgroundColor: '#ffffff',
       borderTopRightRadius: 10,
       borderTopLeftRadius: 10,
@@ -38,10 +48,30 @@ export default function ModalNotesAdd({ isVisible, children, onClose }) {
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
+      flex:1,
     },
     title: {
       color: '#222B45',
       fontSize: 20,
+      flex: 2,
+    },
+    addView: {
+      flex: .5,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    formContainer:{
+      flex: 5,
+    },
+    labeltext: {
+      color: '#8F9BB3',
+      fontStyle: 'italic',
+      fontSize: 14,
+      marginHorizontal: 30,
+      marginVertical: 50,
+      textAlign: 'center',
+      fontVariant: ['small-caps'],
+      flex: 6,
     },
     pickerContainer: {
       flexDirection: 'row',
@@ -54,5 +84,5 @@ export default function ModalNotesAdd({ isVisible, children, onClose }) {
       width: 22,
       height: 22,
       resizeMode: 'cover',
-    },
-  });
+  }
+});

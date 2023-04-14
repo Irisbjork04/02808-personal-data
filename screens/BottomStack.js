@@ -60,7 +60,7 @@ const BottomStack = ({ navigation, showToast, setToastContent }) => {
             <TouchableOpacity onPress={onAddSleepModal}>    
                 <Image source={require("../assets/bigiconsleep.png")} style={styles.image} />        
             </TouchableOpacity>
-            <ModalSleepHrsAdd isVisible={isSleepModalVisible} onClose={onSleepModalClose} />            
+            <ModalSleepHrsAdd isVisible={isSleepModalVisible} onClose={onSleepModalClose} showToast={showToast} setToastContent={setToastContent}/>            
           </View>
 
           <View style={styles.notes}>
@@ -75,17 +75,19 @@ const BottomStack = ({ navigation, showToast, setToastContent }) => {
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
+      flex: 2,
+      paddingTop: 12,
       flexDirection: 'row',
-      
-    //   backgroundColor: 'aliceblue',
-    //   minHeight: 200,
+      shadowColor: "#008b8b",
+      shadowOffset: {width: 0, height: 12},
+      shadowOpacity: 0.58,
+      shadowRadius: 16.00,
+      elevation: .95,
+      // borderTopWidth: 1,
+      // borderTopColor: '#E8F3F1',
     },
     episode: {
         flex: 4,
-        // marginTop: 8,
-        // marginBottom: 8,
-        // paddingLeft: 20,
         justifyContent: 'center',
         alignItems: 'center',
       },

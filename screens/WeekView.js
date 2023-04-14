@@ -1,17 +1,58 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';  
+import React, { Component, useState, useEffect } from 'react';
+import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, TouchableOpacity, ImageBackground, Modal, Pressable, TouchableHighlight} from 'react-native';  
+// import WeekView from 'react-native-week-view';
+import moment from 'moment'
 
 const WeekView = ({ navigation }) => {
+
+    const [date, setDate] = useState(moment());
+    const [isNextAvailable, setIsNextAvailable] = useState(false);
+
+    const nextWeek = () => {
+      const newDate = date.clone().add(1, 'week');
+      setIsNextAvailable(newDate.week() != moment().week());
+      setDate(newDate);
+    };
+
+    const prevWeek = () => {
+      const newDate = date.clone().subtract(1, 'week');
+      setIsNextAvailable(newDate.week() != moment().week());
+      setDate(newDate);
+    };
+
+    const displayWeek = () => {
+      let weekStart = date.clone().startOf('week');
+      let weekEnd = date.clone().endOf('week');
+      return weekStart.format("MMMM D ") + "-" +weekEnd.format("D YYYY");
+    }
+    
+    const nextArrow = () => {
+      if(isNextAvailable) {
+        return (
+          <TouchableOpacity  onPress={nextWeek} >
+              <Image source={require("../assets/rightArrowActive.png")} style={styles.image}/>  
+          </TouchableOpacity> 
+        );
+      }else {
+        return (
+          <Image source={require("../assets/arrowInactive.png")} style={styles.image}/>  
+        )
+      }
+    }
 
     return (
         <View style={styles.container}>
         <View style={styles.formContainer}>
-            <View style={styles.insightContainer}>
-                <Text style={{fontSize: 16, fontWeight: "500", color: "#061428"}}>Insights</Text>
-            </View>
+          <View style={styles.insightContainer}>
+              <Text style={{fontSize: 16, fontWeight: "500", color: "#061428"}}>Insights</Text>
+          </View>
             
           <View style={styles.calendarContainer}> 
-              <Text style={{fontSize: 20, fontWeight: "400",}}>Week View</Text>           
+            <TouchableOpacity  onPress={prevWeek} >
+              <Image source={require("../assets/leftArrowActive.png")} style={styles.image}/>
+            </TouchableOpacity>
+                <Text style={{fontSize: 16, fontWeight: "400", color: "#555F72"}}>{displayWeek()}</Text>  
+            {nextArrow()}                  
           </View> 
 
           <View style={styles.graphscontainner}>
@@ -93,6 +134,13 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         marginHorizontal: 10,
         // marginVertical: 4,
+    },
+    image: {
+      width: 22,
+      height: 22,
+      resizeMode: 'cover',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     graphscontainner: {
       flex: 8,

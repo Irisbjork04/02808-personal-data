@@ -26,7 +26,7 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
     };
 
     const onButtonPress = () => {
-      setToastContent(toastContent );
+      setToastContent(toastContent);
       showToast();  
       onClose();
     };
@@ -95,6 +95,8 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
     modalContent: {
       height: '80%',
       width: '100%',
+      borderTopWidth: 1,
+      borderTopColor: '#E8F3F1',
       backgroundColor: '#ffffff',
       borderTopRightRadius: 18,
       borderTopLeftRadius: 18,
@@ -171,10 +173,6 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
       borderRadius: 10,
       justifyContent: 'center',
       alignItems: "center",
-      // paddingHorizontal: 8,
-      // paddingVertical: 8,
-      // paddingLeft: 20,
-      // paddingRight: 20,
       flex:1,
     },  
     episodetime: {
@@ -195,8 +193,6 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
         paddingLeft: 70,
         paddingRight: 20,
         flexDirection: 'row',
-        // padding: 20,
-        // flex: 1,
         display: 'flex',
         justifyContent: "center",
     },
@@ -211,6 +207,5 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
         justifyContent: "start",
         alignSelf: 'flex-start',
         fontSize: 16, 
-        // paddingVertical: 6,
     }
   });

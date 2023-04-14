@@ -11,6 +11,9 @@ const LayoutScreen = ({ navigation }) => {
     const [toastVisible, setToastVisible] = useState(false);
     const [toastContent, setToastContent] = useState("This is a message!!");
 
+    // const [toastSleepVisible, setToastSleepVisible] = useState(false);
+    // const [toastSleepContent, setToastSleepContent] = useState("This is a message!!");
+
     const showToast = () => { 
       setToastVisible(true);
 
@@ -18,6 +21,14 @@ const LayoutScreen = ({ navigation }) => {
           setToastVisible(false); 
       }, 2000);
     };
+
+    // const showSleepToast = () => { 
+    //   setToastVisible(true);
+
+    //   setTimeout(() => { 
+    //       setToastVisible(false); 
+    //   }, 2000);
+    // };
 
     return (
         <View  style={styles.container}>
@@ -41,6 +52,7 @@ const LayoutScreen = ({ navigation }) => {
                 hideOnPress={true}
                 backgroundColor="white"
             >{toastContent}</Toast>
+
         </View>
       );
 

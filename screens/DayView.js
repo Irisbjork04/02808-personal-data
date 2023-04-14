@@ -1,9 +1,45 @@
-import React, { Component } from 'react';
+import React, { Component, useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native'; 
 // import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-// import moment from 'moment'
+import moment from 'moment'
 
 const DayView = ({ navigation }) => {
+
+  const [date, setDate] = useState(moment());
+  const [isNextAvailable, setIsNextAvailable] = useState(false);
+
+  const isToday = () => date.isSame(new Date(), "day");
+  
+  const nextDate = () => {
+    const newDate = date.clone().add(1, 'day');
+    setIsNextAvailable(newDate.date() != moment().date());
+    setDate(newDate);
+  };
+
+  const prevDate = () => {
+    const newDate = date.clone().subtract(1, 'day');
+    console.log(newDate.format())
+    setIsNextAvailable(newDate.date() != moment().date());
+    setDate(newDate);
+  };
+
+  const displayDate = () => {
+    return isToday()? 'Today - ' + date.format("dddd, MMMM D YYYY") : date.format("dddd, MMMM D YYYY");
+  }
+  
+  const nextArrow = () => {
+    if(isNextAvailable) {
+      return (
+        <TouchableOpacity  onPress={nextDate} >
+            <Image source={require("../assets/rightArrowActive.png")} style={styles.image}/>  
+        </TouchableOpacity> 
+      );
+    }else {
+      return (
+        <Image source={require("../assets/arrowInactive.png")} style={styles.image}/>  
+      )
+    }
+  }
 
     return (
       <View style={styles.container}>
@@ -13,7 +49,11 @@ const DayView = ({ navigation }) => {
           </View>
 
           <View style={styles.calendarContainer}> 
-              <Text style={{fontSize: 20, fontWeight: "400",}}>Day View</Text>           
+          <TouchableOpacity  onPress={prevDate} >
+              <Image source={require("../assets/leftArrowActive.png")} style={styles.image}/>
+            </TouchableOpacity>
+                <Text style={{fontSize: 16, fontWeight: "400", color: "#555F72"}}>{displayDate()}</Text>  
+            {nextArrow()}      
           </View>
 
           <View style={styles.graphscontainner}>
@@ -85,6 +125,13 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
       borderBottomWidth: 1,
       borderBottomColor: '#E8F3F1'
+    },
+    image: {
+      width: 22,
+      height: 22,
+      resizeMode: 'cover',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
     insightContainer: {
       borderBottomWidth: 1,
