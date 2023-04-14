@@ -31,7 +31,7 @@ const MonthView = ({ navigation }) => {
                 <CalendarList 
                     style={{
                     borderColor: 'gray',
-                    height: 350
+                    height: 400
                     }}
                     onDayPress={onDayPress} />
                 {/* <Text style={{fontSize: 20, fontWeight: "400",}}>Month View</Text>            */}
@@ -100,7 +100,7 @@ const MonthView = ({ navigation }) => {
         flex: 8,
       },
       calendarContainer:{
-        flex: 10,
+        flex: 14,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',

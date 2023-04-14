@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
       shadowOpacity: 0.58,
       shadowRadius: 16.00,
       elevation: .95,
-      // borderTopWidth: 1,
-      // borderTopColor: '#E8F3F1',
+      borderTopWidth: 1,
+      borderTopColor: '#E8F3F1',
     },
     episode: {
         flex: 4,
