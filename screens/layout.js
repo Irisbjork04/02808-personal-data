@@ -1,18 +1,29 @@
 import { StatusBar } from 'expo-status-bar'; //This is a component that we can use to show the status bar at the top of the screen
-import React, {  useState } from 'react';
+import React, {  useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';  //Importing the components we need
 import BottomStack from './BottomStack';
 import TopStack from './TopStack';
 import Toast from 'react-native-root-toast';
 import setimmediate from 'setimmediate';
+import { default as  initializeDb } from '../LocalDB/LocalDb';
+import DBContext from '../LocalDB/DBContext';
 
 const LayoutScreen = ({ navigation }) => {
 
     const [toastVisible, setToastVisible] = useState(false);
     const [toastContent, setToastContent] = useState("This is a message!!");
+    const [db, setDb] = useState(null);
 
     // const [toastSleepVisible, setToastSleepVisible] = useState(false);
     // const [toastSleepContent, setToastSleepContent] = useState("This is a message!!");
+    useEffect(() => {
+        const initDB = async () => {
+            const _db = await initializeDb(false);
+            setDb(_db);
+        };
+        initDB().then();
+    }, []);
+
 
     const showToast = () => { 
       setToastVisible(true);
@@ -31,29 +42,31 @@ const LayoutScreen = ({ navigation }) => {
     // };
 
     return (
-        <View  style={styles.container}>
-          <View style={styles.logo}>
-            <Image source={require("../assets/T-minus.png")} style={styles.image} />
-            <View style={{ flex: 12 }}/>
-          </View>
-          
-          <View style={styles.content}>
-            <TopStack></TopStack>
-          </View>
+        <DBContext.Provider value={{ db }}>
+          <View  style={styles.container}>
+            <View style={styles.logo}>
+              <Image source={require("../assets/T-minus.png")} style={styles.image} />
+              <View style={{ flex: 12 }}/>
+            </View>
+            
+            <View style={styles.content}>
+              <TopStack></TopStack>
+            </View>
 
-          <View style={styles.footer}>
-            <BottomStack showToast={showToast} setToastContent={setToastContent}></BottomStack>
-          </View>
-          <Toast
-                visible={toastVisible}
-                position={300}
-                shadow={true}
-                animation={false}
-                hideOnPress={true}
-                backgroundColor="white"
-            >{toastContent}</Toast>
+            <View style={styles.footer}>
+              <BottomStack showToast={showToast} setToastContent={setToastContent}></BottomStack>
+            </View>
+            <Toast
+                  visible={toastVisible}
+                  position={300}
+                  shadow={true}
+                  animation={false}
+                  hideOnPress={true}
+                  backgroundColor="white"
+              >{toastContent}</Toast>
 
-        </View>
+          </View>
+        </DBContext.Provider>
       );
 
   };

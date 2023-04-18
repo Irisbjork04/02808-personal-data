@@ -9,7 +9,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/webpack-config": "^18.0.1",
+    "@expo/webpack-config": "^18.0.4",
     "@react-native-community/datetimepicker": "6.7.3",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/material-top-tabs": "^6.6.2",
@@ -18,10 +18,10 @@
     "@react-navigation/stack": "^6.3.16",
     "expo": "~48.0.6",
     "expo-status-bar": "~1.4.4",
-    "expo-updates": "~0.16.3",
+    "expo-updates": "~0.16.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.71.3",
+    "react-native": "0.71.6",
     "react-native-calendar-picker": "^7.1.4",
     "react-native-calendars": "^1.1294.0",
     "react-native-linear-gradient": "^2.6.2",
@@ -34,10 +34,13 @@
     "react-native-web": "~0.18.10",
     "react-native-week-view": "^0.28.3",
     "react-navigation": "^4.4.4",
+    "rxdb": "^14.8.2",
+    "rxjs": "^7.8.0",
     "setimmediate": "^1.0.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@expo/webpack-config": "^18.0.4"
   },
   "private": true
 }

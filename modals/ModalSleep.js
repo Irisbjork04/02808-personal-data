@@ -1,10 +1,11 @@
 import { StatusBar } from 'expo-status-bar'; //This is a component that we can use to show the status bar at the top of the screen
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useContext  } from 'react';
 import { StyleSheet, TextInput, Text, View, Image, TouchableOpacity, SafeAreaView, ImageBackground, Modal, Pressable , Button} from 'react-native';  //Importing the components we need
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-
+import DBContext from '../LocalDB/DBContext';
+import { SleepTimeCollectionName } from '../LocalDB/LocalDb';
 
 export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToast, setToastContent  }) {
 
@@ -13,6 +14,7 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
     const [dateStartPickerVisible, setStartDatePickerVisible] = useState(false);
     const [selectedEndDate, setSelectedEndDate] = useState(new Date());
     const [dateEndPickerVisible, setEndDatePickerVisible] = useState(false);    
+    const { db } = useContext(DBContext);
 
     const showStartDatePicker = () => {
       setStartDatePickerVisible(true);
@@ -41,10 +43,21 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
     };
 
     const onButtonPress = () => {
+      saveSleepTime().then();
       setToastContent(toastContent);
       showToast();  
       onClose();
     };
+
+    const saveSleepTime = async () => {
+      await db[SleepTimeCollectionName].insert({ 
+        userId: 1,
+        startDateTime: selectedStartDate.toISOString(),
+        endDateTime: selectedEndDate.toISOString()
+       });
+
+      console.log("Saved Sleep Time")
+    }
 
     const isDiscardSleepVisible = () => {      
       console.log('+x === +y', selectedStartDate.getTime(), selectedEndDate.getTime());
