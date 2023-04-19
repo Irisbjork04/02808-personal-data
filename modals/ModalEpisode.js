@@ -6,6 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DBContext from '../LocalDB/DBContext';
 import { TinitusCollectionName } from '../LocalDB/LocalDb';
+import Constants from 'expo-constants';
 
 export default function ModalEpisodeAdd({ isVisible, children, onClose, showToast, setToastContent  }) {
 
@@ -37,7 +38,7 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
     const saveOccurance = async () => {
       console.log("saved Tinitus orrcurence")
       await db[TinitusCollectionName].insert({ 
-        userId: 1,
+        userId: Constants.expoConfig.extra.userId,
         dateTime: selectedDate.toISOString(),
         notes: ''
        });

@@ -26,6 +26,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "userId": 1,
+      "apiUrl": "192.168.0.104:5984"
     }
   }
 }

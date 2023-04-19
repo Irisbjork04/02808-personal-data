@@ -1,15 +1,35 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useContext } from 'react';
 import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from 'react-native-chart-kit';
 import { StyleSheet, Text, View, Image, Dimensions, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native'; 
 // import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import moment from 'moment';
+import DBContext from '../LocalDB/DBContext';
+import { TinitusCollectionName } from '../LocalDB/LocalDb';
 
 
 const DayView = ({ navigation }) => {
 
   const [date, setDate] = useState(moment());
   const [isNextAvailable, setIsNextAvailable] = useState(false);
+  const [tinitusData, setTinitusData] = useState([]);
+  const { db } = useContext(DBContext);
+
+  useEffect(() => {
+      let sub;
+      if (db && db[TinitusCollectionName]) {
+          sub = db[TinitusCollectionName]
+              .find()
+              .sort({ dateTime: 1 })
+              .$.subscribe((occurences) => {
+                setTinitusData(occurences.map( data => data._data));
+              });
+      }
+      return () => {
+          if (sub && sub.unsubscribe) sub.unsubscribe();
+      };
+  }, [db]);
+
 
   const isToday = () => date.isSame(new Date(), "day");
   

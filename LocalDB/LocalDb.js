@@ -1,3 +1,4 @@
+import Constants from 'expo-constants';
 import { addRxPlugin, createRxDatabase } from 'rxdb';
 import fetch from 'cross-fetch';
 import { RxDBDevModePlugin } from 'rxdb/plugins/dev-mode';
@@ -21,7 +22,7 @@ addRxPlugin(RxDBQueryBuilderPlugin);
 addRxPlugin(RxDBDevModePlugin); // for Devloment only
 
 const dbName = 'health-track';
-const syncURL = 'http://admin:strongpassword@localhost:5984'; // Replace with your couchdb instance
+const syncURL = 'http://admin:strongpassword@'+Constants.expoConfig.extra.apiUrl; // Replace with your couchdb instance
 export const TinitusCollectionName = 'tinitus';
 export const SleepTimeCollectionName = 'sleeptime';
 export const NotesCollectionName = 'notes';
@@ -88,6 +89,14 @@ const initialize = async (withSeed = false) => {
         const replicationSleepState = replicateCouchDB({
             collection: db[SleepTimeCollectionName],
             url: `${syncURL}/${SleepTimeCollectionName}/`,
+            fetch: fetch,
+            pull: {},
+            push: {}
+        });
+
+        const replicationNotesState = replicateCouchDB({
+            collection: db[NotesCollectionName],
+            url: `${syncURL}/${NotesCollectionName}/`,
             fetch: fetch,
             pull: {},
             push: {}
