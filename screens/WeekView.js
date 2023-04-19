@@ -1,7 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, TouchableOpacity, ImageBackground, Modal, Pressable, TouchableHighlight} from 'react-native';  
+import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from 'react-native-chart-kit';
+import { StyleSheet, Text, View, Image, SafeAreaView, Dimensions, ScrollView, TouchableOpacity, ImageBackground, Modal, Pressable, TouchableHighlight} from 'react-native';  
 // import WeekView from 'react-native-week-view';
 import moment from 'moment'
+import CircularProgress from 'react-native-circular-progress-indicator';
+// import Notebook from '../notebook/BarChart';
 
 const WeekView = ({ navigation }) => {
 
@@ -24,7 +27,7 @@ const WeekView = ({ navigation }) => {
       let weekStart = date.clone().startOf('week');
       let weekEnd = date.clone().endOf('week');
       return weekStart.format("MMMM D ") + "-" +weekEnd.format("D YYYY");
-    }
+    };
     
     const nextArrow = () => {
       if(isNextAvailable) {
@@ -38,7 +41,75 @@ const WeekView = ({ navigation }) => {
           <Image source={require("../assets/arrowInactive.png")} style={styles.image}/>  
         )
       }
-    }
+    };
+
+    const MyProgressChart = () => {
+      return (
+        <View>
+          <CircularProgress
+            value={6}
+            // valuePrefix = 'Rs'
+            valueSuffix = 'hrs'
+            radius={80}
+            maxValue={8}
+            duration={1000}
+            title="Slept"
+            titleStyle = {{fontSize: 20, fontWeight: "400", color: "#061428"}}
+            inActiveStrokeOpacity={0.5}
+            activeStrokeWidth={20}
+            activeStrokeColor = '#165DFF'
+            inActiveStrokeWidth={20}
+            progressValueStyle={{ fontWeight: '100', color: '#061428', fontSize: 40 }}
+          />
+        </View>
+      );
+    };
+    const MyBarChart = () => {
+      return (
+        <View>
+          <View style={styles.chartTextLabel}>
+            <Image source={require("../assets/barIcon.png")} style={styles.barImage} />
+            <View style={{flex:2}}>
+              <Text style={{fontSize: 12, fontWeight: "400", color: "#061428"}}>No. of Episode(s)</Text>
+            </View>              
+          </View>
+          <BarChart
+            data={{
+              labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              datasets: [
+                {
+                  data: [20, 45, 28, 80, 99, 43],
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 16}
+            height={220}
+            yAxisLabel=""
+            // yAxisLabel={'Rs'}
+            withVerticalLabels = {true}
+            withHorizontalLabels = {true}
+            withInnerLines={true}
+            // showValuesOnTopOfBars={true}
+            chartConfig={{
+              backgroundColor: '#ffffff',
+              backgroundGradientFrom: '#ffffff',
+              backgroundGradientTo: '#ffffff',
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(139,0,0, ${opacity})`,
+              barPercentage: .8,
+              propsForVerticalLabels: { fontSize: 12, fontWeight: "300" },
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        </View>
+      );
+    };
 
     return (
         <View style={styles.container}>
@@ -57,49 +128,12 @@ const WeekView = ({ navigation }) => {
 
           <View style={styles.graphscontainner}>
             <ScrollView style={styles.scrollView}>
-              <Text style={{ fontSize: 10 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.</Text>
+            <View style={styles.circularProgressBarView}>
+              <MyProgressChart />
+            </View>
+            <View style={styles.barView}>
+              <MyBarChart/>
+            </View>
             </ScrollView>
           </View>   
 
@@ -150,6 +184,31 @@ const styles = StyleSheet.create({
     scrollView: {
       marginHorizontal: 10,
       marginVertical: 15,
+    },
+    circularProgressBarView: {
+      marginHorizontal: 10,
+      marginVertical: 15,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    barView: {
+      marginVertical: 15,
+    },
+    header: {
+      fontSize: 16,
+    },
+    chartTextLabel: {
+      flex: 2,      
+      flexDirection: 'row',
+      marginHorizontal: 10,
+      marginVertical: 4,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+    barImage:{
+      height: 20,
+      width: 10,
+      marginRight: 10,
     },
   });
 

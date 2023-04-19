@@ -1,7 +1,8 @@
 import React, { Component, useState } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';  
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import moment from 'moment'
+import moment from 'moment';
+
 
 const MonthView = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
@@ -24,65 +25,31 @@ const MonthView = ({ navigation }) => {
                 <Image source={require("../assets/circleicon.png")} style={styles.imageNote} />
                 <View style={{flex:2}}>
                     <Text style={{fontSize: 12, fontWeight: "300", color: "#061428"}}>Circle sizes indicate the number of occurrences of tinnitus episodes in a day.</Text>
-                </View>
-               
+                </View>              
             </View>
             <View style={styles.calendarContainer}> 
-                <CalendarList 
+                <CalendarList
                     style={{
                     borderColor: 'gray',
-                    height: 400
+                    height: 400,
+                    }}
+                    pastScrollRange={24}
+                    futureScrollRange={0}
+                    markedDates={{
+                      '2023-04-01': {selected: true, marked: true, selectedColor: 'red'},
+                      '2023-04-02': {marked: true},
+                      '2023-04-03': {selected: true, marked: true, selectedColor: 'blue'},
                     }}
                     onDayPress={onDayPress} />
                 {/* <Text style={{fontSize: 20, fontWeight: "400",}}>Month View</Text>            */}
             </View> 
   
             <View style={styles.graphscontainner}>
-              <ScrollView style={styles.scrollView}>
+              {/* <ScrollView style={styles.scrollView}>
                 <Text style={{ fontSize: 10 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.</Text>
-              </ScrollView>
+                  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                  minim veniam, quis nostrud 
+              </ScrollView> */}
             </View>   
   
           </View>
@@ -90,6 +57,7 @@ const MonthView = ({ navigation }) => {
       );
   }
   
+
   const styles = StyleSheet.create({
       container: {
         flex: 1,
@@ -138,5 +106,7 @@ const MonthView = ({ navigation }) => {
         marginVertical: 15,
       },
     });
+
+  
 
 export default MonthView;

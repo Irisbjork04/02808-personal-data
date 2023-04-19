@@ -1,7 +1,10 @@
 import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native'; 
+import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from 'react-native-chart-kit';
+import { StyleSheet, Text, View, Image, Dimensions, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native'; 
 // import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import moment from 'moment'
+import CircularProgress from 'react-native-circular-progress-indicator';
+import moment from 'moment';
+
 
 const DayView = ({ navigation }) => {
 
@@ -25,7 +28,7 @@ const DayView = ({ navigation }) => {
 
   const displayDate = () => {
     return isToday()? 'Today - ' + date.format("dddd, MMMM D YYYY") : date.format("dddd, MMMM D YYYY");
-  }
+  };
   
   const nextArrow = () => {
     if(isNextAvailable) {
@@ -39,74 +42,106 @@ const DayView = ({ navigation }) => {
         <Image source={require("../assets/arrowInactive.png")} style={styles.image}/>  
       )
     }
-  }
+  };
 
+
+  const MyProgressChart = () => {
     return (
-      <View style={styles.container}>
-        <View style={styles.formContainer}> 
-          <View style={styles.insightContainer}>
-            <Text style={{fontSize: 16, fontWeight: "500", color: "#061428"}}>Insights</Text>
-          </View>
-
-          <View style={styles.calendarContainer}> 
-          <TouchableOpacity  onPress={prevDate} >
-              <Image source={require("../assets/leftArrowActive.png")} style={styles.image}/>
-            </TouchableOpacity>
-                <Text style={{fontSize: 16, fontWeight: "400", color: "#555F72"}}>{displayDate()}</Text>  
-            {nextArrow()}      
-          </View>
-
-          <View style={styles.graphscontainner}>
-            <ScrollView style={styles.scrollView}>
-              <Text style={{ fontSize: 10 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.</Text>
-            </ScrollView>
-          </View>   
-
-        </View>
-      </View>  
+      <View>
+        <CircularProgress
+          value={6}
+          // valuePrefix = 'Rs'
+          valueSuffix = 'hrs'
+          radius={80}
+          maxValue={8}
+          duration={1000}
+          title="Slept"
+          titleStyle = {{fontSize: 20, fontWeight: "400", color: "#061428"}}
+          inActiveStrokeOpacity={0.5}
+          activeStrokeWidth={20}
+          activeStrokeColor = '#165DFF'
+          inActiveStrokeWidth={20}
+          progressValueStyle={{ fontWeight: '100', color: '#061428', fontSize: 40 }}
+        />
+      </View>
     );
+  };
+  const MyBarChart = () => {
+    return (
+      <View>
+        <View style={styles.chartTextLabel}>
+          <Image source={require("../assets/barIcon.png")} style={styles.barImage} />
+          <View style={{flex:2}}>
+            <Text style={{fontSize: 12, fontWeight: "400", color: "#061428"}}>No. of Episode(s)</Text>
+          </View>              
+        </View>
+        <BarChart
+          data={{
+            labels: ['12AM', '4AM', '8AM', '12PM', '4PM', '8PM', '12PM'],
+            datasets: [
+              {
+                data: [20, 45, 28, 80, 99, 43],
+              },
+            ],
+          }}
+          width={Dimensions.get('window').width - 20}
+          height={220}
+          yAxisLabel=""
+          // yAxisLabel={'Rs'}
+          withVerticalLabels = {true}
+          withHorizontalLabels = {true}
+          withInnerLines={true}
+          // showValuesOnTopOfBars={true}
+          chartConfig={{
+            backgroundColor: '#ffffff',
+            backgroundGradientFrom: '#ffffff',
+            backgroundGradientTo: '#ffffff',
+            decimalPlaces: 0,
+            color: (opacity = 1) => `rgba(139,0,0, ${opacity})`,
+            barPercentage: .8,
+            propsForVerticalLabels: { fontSize: 12, fontWeight: "300" },
+            style: {
+              borderRadius: 16,
+            },
+          }}
+          style={{
+            marginVertical: 8,
+            borderRadius: 16,
+          }}
+        />
+      </View>
+    );
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.formContainer}> 
+        <View style={styles.insightContainer}>
+          <Text style={{fontSize: 16, fontWeight: "500", color: "#061428"}}>Insights</Text>
+        </View>
+
+        <View style={styles.calendarContainer}> 
+        <TouchableOpacity  onPress={prevDate} >
+            <Image source={require("../assets/leftArrowActive.png")} style={styles.image}/>
+        </TouchableOpacity>
+            <Text style={{fontSize: 16, fontWeight: "400", color: "#555F72"}}>{displayDate()}</Text>  
+            {nextArrow()}      
+        </View>
+
+        <View style={styles.graphscontainner}>
+          <ScrollView style={styles.scrollView}>
+            <View style={styles.circularProgressBarView}>
+              <MyProgressChart />
+            </View>
+            <View style={styles.barView}>
+              <MyBarChart/>
+            </View>
+          </ScrollView>
+        </View>   
+
+      </View>
+    </View>  
+  );
 }
 
 const styles = StyleSheet.create({
@@ -146,12 +181,45 @@ const styles = StyleSheet.create({
     graphscontainner: {
       flex: 8,
       alignItems: 'center',
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
     },
     scrollView: {
       marginHorizontal: 10,
       marginVertical: 15,
     },
+    circularProgressBarView: {
+      marginHorizontal: 10,
+      marginVertical: 15,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    barView: {
+      marginVertical: 15,
+    },
+    header: {
+      fontSize: 16,
+    },
+    chartTextLabel: {
+      flex: 2,      
+      flexDirection: 'row',
+      marginHorizontal: 10,
+      marginVertical: 4,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+    barImage:{
+      height: 20,
+      width: 10,
+      marginRight: 10,
+    },
+    // chart: {
+    //   marginBottom: 30,
+    //   padding: 10,
+    //   paddingTop: 20,
+    //   borderRadius: 20,
+    //   backgroundColor: 'green',
+    //   width: 375
+    // }
   });
 
 export default DayView;
