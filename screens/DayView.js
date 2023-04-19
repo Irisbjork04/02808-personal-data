@@ -1,7 +1,7 @@
 import React, { Component, useState, useEffect, useContext } from 'react';
 import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from 'react-native-chart-kit';
 import { StyleSheet, Text, View, Image, Dimensions, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native'; 
-// import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
+import Cloud from 'react-native-word-cloud';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import moment from 'moment';
 import DBContext from '../LocalDB/DBContext';
@@ -133,6 +133,29 @@ const DayView = ({ navigation }) => {
     );
   };
 
+  const words = [
+    {
+      keyword: "severe headache",    // the actual keyword
+      frequency: 1,      // the frequency of this keyword
+      color: "#F2D7D5"     // the color of the circle that shows this keyword
+    },
+    {
+      keyword: "buzzing",    // the actual keyword
+      frequency: 1,      // the frequency of this keyword
+      color: "#F5EEF8"     // the color of the circle that shows this keyword
+    },
+    {
+      keyword: "fever",    // the actual keyword
+      frequency: 1,      // the frequency of this keyword
+      color: "#EAF2F8"     // the color of the circle that shows this keyword
+    },
+    {
+      keyword: "headache",    // the actual keyword
+      frequency: 1,      // the frequency of this keyword
+      color: "#E8F8F5 ",     // the color of the circle that shows this keyword
+    },
+  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.formContainer}> 
@@ -156,9 +179,16 @@ const DayView = ({ navigation }) => {
             <View style={styles.barView}>
               <MyBarChart/>
             </View>
-          </ScrollView>
-        </View>   
-
+            <View style={styles.wordCloudView}>
+              <View style={{flex:10, justifyContent:"flex-end"}}>
+                <Image source={require("../assets/dayWordCloud.png")} style={styles.wordcloudImage} />
+              </View>
+              <View style={{flex:8, justifyContent:"center", alignItems: "center"}}>
+                <Cloud keywords={words} scale={100} largestAtCenter={true} drawContainerCircle={true} containerCircleColor={'#ffffff'}/>
+              </View>
+            </View>
+          </ScrollView>        
+        </View>
       </View>
     </View>  
   );
@@ -216,6 +246,21 @@ const styles = StyleSheet.create({
     barView: {
       marginVertical: 15,
     },
+    wordCloudView: {
+      flex: 1,
+      flexDirection: 'row',
+      marginHorizontal: 30,
+      // marginVertical: 15,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    wordcloudImage: {
+      width: 60,
+      height: 60,
+      resizeMode: 'cover',
+      // alignItems: 'center',
+      justifyContent: 'flex-end',
+    },
     header: {
       fontSize: 16,
     },
@@ -232,14 +277,6 @@ const styles = StyleSheet.create({
       width: 10,
       marginRight: 10,
     },
-    // chart: {
-    //   marginBottom: 30,
-    //   padding: 10,
-    //   paddingTop: 20,
-    //   borderRadius: 20,
-    //   backgroundColor: 'green',
-    //   width: 375
-    // }
   });
 
 export default DayView;
