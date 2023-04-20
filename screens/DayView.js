@@ -22,7 +22,11 @@ const DayView = ({ navigation }) => {
               .find()
               .sort({ dateTime: 1 })
               .$.subscribe((occurences) => {
-                setTinitusData(occurences.map( data => data._data));
+                // console.log(occurences)
+                setTinitusData(occurences
+                  .filter( data => moment(data._data.dateTime).isSame(date, 'day'))
+                  .map( data => data._data)
+                  );
               });
       }
       return () => {

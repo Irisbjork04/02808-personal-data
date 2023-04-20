@@ -36,7 +36,7 @@ const initialize = async (withSeed = false) => {
         db = await createRxDatabase({
             name: dbName,
             storage: STORAGE,
-            multiInstance: true,
+            multiInstance: false,
             ignoreDuplicate: true,
         });
 
