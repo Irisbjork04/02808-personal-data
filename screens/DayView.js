@@ -27,12 +27,13 @@ const DayView = ({ navigation }) => {
                   .filter( data => moment(data._data.dateTime).isSame(date, 'day'))
                   .map( data => data._data)
                   );
+                  
               });
       }
       return () => {
           if (sub && sub.unsubscribe) sub.unsubscribe();
       };
-  }, [db]);
+  }, [db,date]);
 
 
   const isToday = () => date.isSame(new Date(), "day");
@@ -90,7 +91,32 @@ const DayView = ({ navigation }) => {
       </View>
     );
   };
+
+
+  const MyBarchartData = () => {
+    return {
+      onlyUnique: (value, index, self) => {
+        return self.indexOf(value) === index;
+      },
+      labels: function() {
+        return tinitusData
+                .map(data => moment(data.dateTime).format('hA'))
+                .filter(this.onlyUnique);
+      },
+      data: function() {
+        return this.labels().map(label => {
+            return tinitusData
+                    .filter(data => moment(data.dateTime).format('hA') == label)
+                    .length;
+          });
+      }
+    };
+  };
   const MyBarChart = () => {
+    let labels = MyBarchartData().labels();
+    let data = MyBarchartData().data();
+    console.log(labels);
+    console.log(data);
     return (
       <View>
         <View style={styles.chartTextLabel}>
@@ -99,12 +125,13 @@ const DayView = ({ navigation }) => {
             <Text style={{fontSize: 12, fontWeight: "400", color: "#061428"}}>No. of Episode(s)</Text>
           </View>              
         </View>
+
         <BarChart
           data={{
-            labels: ['12AM', '4AM', '8AM', '12PM', '4PM', '8PM', '12PM'],
+            labels: labels,
             datasets: [
               {
-                data: [20, 45, 28, 80, 99, 43],
+                data: data,
               },
             ],
           }}
