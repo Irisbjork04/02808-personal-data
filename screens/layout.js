@@ -14,8 +14,6 @@ const LayoutScreen = ({ navigation }) => {
     const [toastContent, setToastContent] = useState("This is a message!!");
     const [db, setDb] = useState(null);
 
-    // const [toastSleepVisible, setToastSleepVisible] = useState(false);
-    // const [toastSleepContent, setToastSleepContent] = useState("This is a message!!");
     useEffect(() => {
         const initDB = async () => {
             const _db = await initializeDb(false);
@@ -30,16 +28,9 @@ const LayoutScreen = ({ navigation }) => {
 
       setTimeout(() => { 
           setToastVisible(false); 
-      }, 2000);
+      }, 4000);
     };
 
-    // const showSleepToast = () => { 
-    //   setToastVisible(true);
-
-    //   setTimeout(() => { 
-    //       setToastVisible(false); 
-    //   }, 2000);
-    // };
 
     return (
         <DBContext.Provider value={{ db }}>

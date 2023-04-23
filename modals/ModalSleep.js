@@ -44,7 +44,8 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
 
     const onButtonPress = () => {
       // endtime cannot be before starttime
-      if (selectedStartDate.valueOf() > selectedEndDate.valueOf()) {
+      if (selectedStartDate.setMilliseconds(0) >= selectedEndDate.setMilliseconds(0)) {
+        console.log(selectedStartDate, selectedEndDate  )
         setToastContent(toastContent("fail"));
         showToast();
         return;
@@ -80,6 +81,7 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
     };
 
     const toastContent = (status="success") => {
+      console.log(status)
       if (status === "success"){
         return (
           <View style={styles.episodetoast}>
@@ -90,7 +92,7 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
       }
       return (
         <View style={styles.episodetoast}>
-          <Text style={styles.episodetoasttext}>End time cannot be before start time</Text>
+          <Text >End time cannot be before start time</Text>
         </View>
       )
       
