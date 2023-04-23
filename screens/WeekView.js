@@ -1,15 +1,116 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component, useState, useEffect, useContext } from 'react';
 import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from 'react-native-chart-kit';
 import { StyleSheet, Text, View, Image, SafeAreaView, Dimensions, ScrollView, TouchableOpacity, ImageBackground, Modal, Pressable, TouchableHighlight} from 'react-native';  
 // import WeekView from 'react-native-week-view';
 import moment from 'moment'
 import CircularProgress from 'react-native-circular-progress-indicator';
 // import Notebook from '../notebook/BarChart';
+import DBContext from '../LocalDB/DBContext';
+import { TinitusCollectionName, SleepTimeCollectionName } from '../LocalDB/LocalDb';
 
 const WeekView = ({ navigation }) => {
 
     const [date, setDate] = useState(moment());
     const [isNextAvailable, setIsNextAvailable] = useState(false);
+    const [tinitusData, setTinitusData] = useState([]);
+    const [sleepTimeData, setSleepTimeData] = useState([]);
+    const { db } = useContext(DBContext);
+
+    useEffect(() => {
+        let subTinitus, subSleepTime;
+        if (db && db[TinitusCollectionName]) {
+          subTinitus = db[TinitusCollectionName]
+                .find({
+                  selector: {
+                    userId: 1
+                  }
+                })
+                .sort({ dateTime: 1 })
+                .$.subscribe((occurences) => {
+                  // console.log(occurences)
+                  setTinitusData(occurences
+                    .filter( data => moment(data._data.dateTime).isSame(date, 'week'))
+                    .map( data => data._data)
+                    );
+                    
+                });
+        }
+
+        if (db && db[SleepTimeCollectionName]) {
+          subSleepTime = db[SleepTimeCollectionName]
+                .find({
+                  selector: {
+                    userId: 1
+                  }
+                })
+                .sort({ endDateTime: 1 })
+                .$.subscribe((sleepTimes) => {
+                  // console.log(sleepTimes)
+                  setSleepTimeData(sleepTimes
+                    .filter( data => moment(data._data.endDateTime).isSame(date, 'week'))
+                    .map( data => data._data)
+                    );
+                });
+        }
+
+        return () => {
+            if (subTinitus && subTinitus.unsubscribe) subTinitus.unsubscribe();
+            if (subSleepTime && subSleepTime.unsubscribe) subSleepTime.unsubscribe();
+        };
+    }, [db,date]);
+
+    useEffect(() => { // multiinstance replication is not working, so using this hack to update the data
+      let dataFetcher = setInterval(() => {
+        if(!db) {  
+          return;
+        }
+        // TinitusData Fetcher
+        let todayOccurences = [];
+        db[TinitusCollectionName]
+              .find({
+                selector: {
+                  userId: 1
+                }
+              })
+              .sort({ dateTime: 1 })
+              .exec()
+              .then(occurences => {
+                // console.log(occurences);
+                todayOccurences = occurences.filter( data => moment(data._data.dateTime).isSame(date, 'week'))
+                  .map( data => data._data);
+              });
+
+                    
+  
+        if(todayOccurences.length != tinitusData.length) {
+          setTinitusData(todayOccurences);
+        }
+
+        // SleepTimeData Fetcher
+        let todaySleepTimes = [];
+        db[SleepTimeCollectionName]
+            .find({
+              selector: {
+                userId: 1
+              }
+            })
+            .sort({ endDateTime: 1 })
+            .exec()
+            .then(sleepTimes => {
+              // console.log(sleepTimes);
+              todaySleepTimes = sleepTimes.filter( data => moment(data._data.endDateTime).isSame(date, 'week'))
+                .map( data => data._data);
+            });
+
+        if(todaySleepTimes.length != sleepTimeData.length) {
+          setSleepTimeData(todaySleepTimes);
+        }
+      }, 60000);
+  
+      return () => {
+        clearInterval(dataFetcher);
+      };
+    }, [db]);
 
     const nextWeek = () => {
       const newDate = date.clone().add(1, 'week');
@@ -22,11 +123,17 @@ const WeekView = ({ navigation }) => {
       setIsNextAvailable(newDate.week() != moment().week());
       setDate(newDate);
     };
+    
+    const selectedWeek = () => {
+      return {
+        startDate: date.clone().startOf('week'),
+        endDate: date.clone().endOf('week')
+      }
+    };
 
     const displayWeek = () => {
-      let weekStart = date.clone().startOf('week');
-      let weekEnd = date.clone().endOf('week');
-      return weekStart.format("MMMM D ") + "-" +weekEnd.format("D YYYY");
+      let week = selectedWeek();
+      return week.startDate.format("MMMM D ") + "-" +week.endDate.format("D YYYY");
     };
     
     const nextArrow = () => {
@@ -43,11 +150,29 @@ const WeekView = ({ navigation }) => {
       }
     };
 
+    const MyBarchartData = () => {
+      let data = [0,0,0,0,0,0,0];
+
+      tinitusData
+        .forEach( d => {
+          let day = moment(d.dateTime).isoWeekday();
+          data[day-1] = data[day-1] + 1;
+        });
+      
+      return data;
+    };
+
     const MyProgressChart = () => {
+      let totalSleepTime = sleepTimeData.reduce((acc, data) => {
+        return acc + moment(data.endDateTime).diff(moment(data.startDateTime)); 
+      }, 0) / (1000 * 60 * 60);
+  
+      totalSleepTime = Math.trunc(totalSleepTime); // Remove decimal part
+
       return (
         <View>
           <CircularProgress
-            value={6}
+            value={totalSleepTime}
             // valuePrefix = 'Rs'
             valueSuffix = 'hrs'
             radius={80}
@@ -75,10 +200,10 @@ const WeekView = ({ navigation }) => {
           </View>
           <BarChart
             data={{
-              labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
               datasets: [
                 {
-                  data: [20, 45, 28, 80, 99, 43],
+                  data: MyBarchartData(),
                 },
               ],
             }}

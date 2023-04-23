@@ -5,7 +5,7 @@ import Cloud from 'react-native-word-cloud';
 import CircularProgress from 'react-native-circular-progress-indicator';
 import moment from 'moment';
 import DBContext from '../LocalDB/DBContext';
-import { TinitusCollectionName } from '../LocalDB/LocalDb';
+import { TinitusCollectionName, SleepTimeCollectionName } from '../LocalDB/LocalDb';
 
 
 const DayView = ({ navigation }) => {
@@ -13,13 +13,18 @@ const DayView = ({ navigation }) => {
   const [date, setDate] = useState(moment());
   const [isNextAvailable, setIsNextAvailable] = useState(false);
   const [tinitusData, setTinitusData] = useState([]);
+  const [sleepTimeData, setSleepTimeData] = useState([]);
   const { db } = useContext(DBContext);
 
   useEffect(() => {
-      let sub;
+      let subTinitus, subSleepTime;
       if (db && db[TinitusCollectionName]) {
-          sub = db[TinitusCollectionName]
-              .find()
+        subTinitus = db[TinitusCollectionName]
+              .find({
+                selector: {
+                  userId: 1
+                }
+              })
               .sort({ dateTime: 1 })
               .$.subscribe((occurences) => {
                 // console.log(occurences)
@@ -30,12 +35,83 @@ const DayView = ({ navigation }) => {
                   
               });
       }
+
+      if (db && db[SleepTimeCollectionName]) {
+        subTinitus = db[SleepTimeCollectionName]
+              .find({
+                selector: {
+                  userId: 1
+                }
+              })
+              .sort({ endDateTime: 1 })
+              .$.subscribe((occurences) => {
+                // console.log(occurences)
+                setSleepTimeData(occurences
+                  .filter( data => moment(data._data.endDateTime).isSame(date, 'day'))
+                  .map( data => data._data)
+                  );
+                  
+              });
+      }
       return () => {
-          if (sub && sub.unsubscribe) sub.unsubscribe();
+          if (subTinitus && subTinitus.unsubscribe) subTinitus.unsubscribe();
+          if (subSleepTime && subSleepTime.unsubscribe) subSleepTime.unsubscribe();
       };
   }, [db,date]);
 
+  useEffect(() => { // multiinstance replication is not working, so using this hack to update the data
+    console.log("called with DB value:"+db);
+    let dataFetcher = setInterval(() => {
+      if(!db) {  
+        return;
+      }
+      // TinitusData Fetcher
+      let todayOccurences = [];
+      let occurences = db[TinitusCollectionName]
+                  .find({
+                    selector: {
+                      userId: 1
+                    }
+                  })
+                  .sort({ dateTime: 1 })
+                  .exec()
+                  .then(occurences => {
+                    // console.log(occurences)
+                    todayOccurences = occurences
+                    .filter( data => moment(data._data.dateTime).isSame(date, 'day'))
+                    .map( data => data._data);
+                  });
 
+      if(todayOccurences.length != tinitusData.length) {
+        setTinitusData(todayOccurences);
+      }
+
+      // SleepTimeData Fetcher
+      let todaySleepTimeOccurences = [];
+      let sleepTimeOccurences = db[SleepTimeCollectionName]
+                  .find({
+                    selector: {
+                      userId: 1
+                    }
+                  })
+                  .sort({ endDateTime: 1 })
+                  .exec()
+                  .then(occurences => {
+                    // console.log(occurences)
+                    todaySleepTimeOccurences = occurences
+                    .filter( data => moment(data._data.endDateTime).isSame(date, 'day'))
+                    .map( data => data._data);
+                  });
+
+      if(todaySleepTimeOccurences.length != sleepTimeData.length) {
+        setSleepTimeData(todaySleepTimeOccurences);
+      }
+    }, 60000);
+
+    return () => {
+      clearInterval(dataFetcher);
+    };
+  }, [db]);
   const isToday = () => date.isSame(new Date(), "day");
   
   const nextDate = () => {
@@ -71,10 +147,15 @@ const DayView = ({ navigation }) => {
 
 
   const MyProgressChart = () => {
+    let totalSleepTime = sleepTimeData.reduce((acc, data) => {
+      return acc + moment(data.endDateTime).diff(moment(data.startDateTime)); 
+    }, 0) / (1000 * 60 * 60);
+
+    totalSleepTime = Math.trunc(totalSleepTime); // Remove decimal part
     return (
       <View>
         <CircularProgress
-          value={6}
+          value={totalSleepTime}
           // valuePrefix = 'Rs'
           valueSuffix = 'hrs'
           radius={80}
@@ -115,8 +196,6 @@ const DayView = ({ navigation }) => {
   const MyBarChart = () => {
     let labels = MyBarchartData().labels();
     let data = MyBarchartData().data();
-    console.log(labels);
-    console.log(data);
     return (
       <View>
         <View style={styles.chartTextLabel}>
