@@ -2,11 +2,13 @@ import React, { Component, useState, useEffect, useContext } from 'react';
 import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from 'react-native-chart-kit';
 import { StyleSheet, Text, View, Image, SafeAreaView, Dimensions, ScrollView, TouchableOpacity, ImageBackground, Modal, Pressable, TouchableHighlight} from 'react-native';  
 // import WeekView from 'react-native-week-view';
+import Cloud from 'react-native-word-cloud';
 import moment from 'moment'
 import CircularProgress from 'react-native-circular-progress-indicator';
 // import Notebook from '../notebook/BarChart';
 import DBContext from '../LocalDB/DBContext';
 import { TinitusCollectionName, SleepTimeCollectionName } from '../LocalDB/LocalDb';
+import { frequencyDistribution, remove_stopwords, randomColorWithout } from './helper/frequency';
 
 const WeekView = ({ navigation }) => {
 
@@ -14,6 +16,7 @@ const WeekView = ({ navigation }) => {
     const [isNextAvailable, setIsNextAvailable] = useState(false);
     const [tinitusData, setTinitusData] = useState([]);
     const [sleepTimeData, setSleepTimeData] = useState([]);
+    const [wordCloudData, setWordCloudData] = useState([]);
     const { db } = useContext(DBContext);
 
     useEffect(() => {
@@ -111,6 +114,10 @@ const WeekView = ({ navigation }) => {
         clearInterval(dataFetcher);
       };
     }, [db]);
+
+    useEffect(() => {
+      setWordCloudData(GenerateWordCloudData());
+    }, [tinitusData]);
 
     const nextWeek = () => {
       const newDate = date.clone().add(1, 'week');
@@ -236,6 +243,18 @@ const WeekView = ({ navigation }) => {
       );
     };
 
+    const GenerateWordCloudData = () => {
+      let text = tinitusData.map(data => data.notes).join(" ");
+  
+      let words = frequencyDistribution(remove_stopwords(text));
+  
+      // Add color to each word
+      words = words.map(word => {
+        return {...word, color: randomColorWithout("#000000")} 
+      });
+      return words;
+    };
+
     return (
         <View style={styles.container}>
         <View style={styles.formContainer}>
@@ -253,12 +272,20 @@ const WeekView = ({ navigation }) => {
 
           <View style={styles.graphscontainner}>
             <ScrollView style={styles.scrollView}>
-            <View style={styles.circularProgressBarView}>
-              <MyProgressChart />
-            </View>
-            <View style={styles.barView}>
-              <MyBarChart/>
-            </View>
+              <View style={styles.circularProgressBarView}>
+                <MyProgressChart />
+              </View>
+              <View style={styles.barView}>
+                <MyBarChart/>
+              </View>
+              <View>
+                <View style={{flex:4, flexDirection: "row", justifyContent:"flex-end", marginHorizontal:20, marginBottom: -35 }}>
+                  <Image source={require("../assets/weekWordCloud.png")} style={styles.wordcloudImage} />
+                </View>
+                <View style={{flex:1, justifyContent:"center", alignItems: "center"}}>
+                  <Cloud keywords={wordCloudData} scale={500} largestAtCenter={true} drawContainerCircle={false} containerCircleColor={'#ffffff'}/>
+                </View>
+              </View>
             </ScrollView>
           </View>   
 
@@ -334,6 +361,15 @@ const styles = StyleSheet.create({
       height: 20,
       width: 10,
       marginRight: 10,
+    },
+    wordCloudView: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    wordcloudImage: {
+      width: 100,
+      height: 100,
+      resizeMode: 'cover',
     },
   });
 

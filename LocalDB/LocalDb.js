@@ -89,15 +89,16 @@ const initialize = async (withSeed = false) => {
         const replicationSleepState = replicateCouchDB({
             collection: db[SleepTimeCollectionName],
             url: `${syncURL}/${SleepTimeCollectionName}/`,
+            live: true,
             fetch: fetch,
             pull: {},
             push: {}
         });
         // trigger RESYNC each 10 seconds.
-        setInterval(() => {
-            console.log("replication re-synchronization")
-            replicationSleepState.reSync()
-        }, 10 * 1000);
+        // setInterval(() => {
+        //     console.log("replication re-synchronization")
+        //     replicationSleepState.reSync()
+        // }, 10 * 1000);
 
         const replicationNotesState = replicateCouchDB({
             collection: db[NotesCollectionName],

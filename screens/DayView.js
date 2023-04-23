@@ -6,7 +6,7 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 import moment from 'moment';
 import DBContext from '../LocalDB/DBContext';
 import { TinitusCollectionName, SleepTimeCollectionName } from '../LocalDB/LocalDb';
-import { frequencyDistribution, remove_stopwords, randomColor } from './helper/frequency';
+import { frequencyDistribution, remove_stopwords, randomColorWithout } from './helper/frequency';
 
 
 const DayView = ({ navigation }) => {
@@ -190,6 +190,7 @@ const DayView = ({ navigation }) => {
         return tinitusData
                 .map(data => moment(data.dateTime).format('hA'))
                 .filter(this.onlyUnique);
+        // return ['12AM', '1AM', '2AM', '3AM', '4AM', '5AM', '6AM', '7AM', '8AM', '9AM', '10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM', '7PM', '8PM', '9PM', '10PM', '11PM'];
       },
       data: function() {
         return this.labels().map(label => {
@@ -224,6 +225,7 @@ const DayView = ({ navigation }) => {
           width={Dimensions.get('window').width - 20}
           height={220}
           yAxisLabel=""
+          verticalLabelRotation={0}
           // yAxisLabel={'Rs'}
           withVerticalLabels = {true}
           withHorizontalLabels = {true}
@@ -257,7 +259,7 @@ const DayView = ({ navigation }) => {
 
     // Add color to each word
     words = words.map(word => {
-      return {...word, color: randomColor()} 
+      return {...word, color: randomColorWithout("#000000")} 
     });
     return words;
   };
@@ -308,12 +310,12 @@ const DayView = ({ navigation }) => {
             <View style={styles.barView}>
               <MyBarChart/>
             </View>
-            <View style={styles.wordCloudView}>
-              <View style={{flex:10, justifyContent:"flex-end"}}>
+            <View>
+              <View style={{flex:4, flexDirection: "row", justifyContent:"flex-end", marginHorizontal:20, marginBottom: -35 }}>
                 <Image source={require("../assets/dayWordCloud.png")} style={styles.wordcloudImage} />
               </View>
-              <View style={{flex:8, justifyContent:"center", alignItems: "center"}}>
-                <Cloud keywords={wordCloudData} scale={100} largestAtCenter={true} drawContainerCircle={true} containerCircleColor={'#ffffff'}/>
+              <View style={{flex:1, justifyContent:"center", alignItems: "center"}}>
+                <Cloud keywords={wordCloudData} scale={500} largestAtCenter={true} drawContainerCircle={false} containerCircleColor={'#ffffff'}/>
               </View>
             </View>
           </ScrollView>        
@@ -376,19 +378,19 @@ const styles = StyleSheet.create({
       marginVertical: 15,
     },
     wordCloudView: {
-      flex: 1,
-      flexDirection: 'row',
-      marginHorizontal: 30,
+      // flex: 1,
+      // flexDirection: 'row',
+      // marginHorizontal: 30,
       // marginVertical: 15,
       alignItems: 'center',
       justifyContent: 'center',
     },
     wordcloudImage: {
-      width: 60,
-      height: 60,
+      width: 100,
+      height: 100,
       resizeMode: 'cover',
       // alignItems: 'center',
-      justifyContent: 'flex-end',
+      // justifyContent: 'flex-end',
     },
     header: {
       fontSize: 16,

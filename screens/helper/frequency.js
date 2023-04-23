@@ -40,6 +40,15 @@ export const remove_stopwords = (str) => {
 }
 
 // function to generate a random color
-export const randomColor = () => {
+const randomColor = () => {
     return '#' + Math.floor(Math.random() * 16777215).toString(16);
+}
+
+// function to generate a random color without a given color
+export const randomColorWithout = (color) => {
+    let newColor = randomColor();
+    while(newColor === color) {
+        newColor = randomColor();
+    }
+    return newColor;
 }

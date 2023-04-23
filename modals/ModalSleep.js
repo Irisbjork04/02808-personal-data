@@ -25,16 +25,16 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
     };
 
     const handleStartDateConfirm = (date) => {
-      setSelectedStartDate(date);
       hideStartDatePicker();
+      setSelectedStartDate(date);
     };
 
     const showEndDatePicker = () => {
-      setStartDatePickerVisible(true);
+      setEndDatePickerVisible(true);
     };
 
     const hideEndDatePicker = () => {
-      setStartDatePickerVisible(false);
+      setEndDatePickerVisible(false);
     };
 
     const handleEndDateConfirm = (date) => {
@@ -43,8 +43,15 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
     };
 
     const onButtonPress = () => {
+      // endtime cannot be before starttime
+      if (selectedStartDate.valueOf() > selectedEndDate.valueOf()) {
+        setToastContent(toastContent("fail"));
+        showToast();
+        return;
+      }
+
       saveSleepTime().then();
-      setToastContent(toastContent);
+      setToastContent(toastContent("success"));
       showToast();  
       onClose();
     };
@@ -59,8 +66,7 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
       console.log("Saved Sleep Time")
     }
 
-    const isDiscardSleepVisible = () => {      
-      console.log('+x === +y', selectedStartDate.getTime(), selectedEndDate.getTime());
+    const isDiscardSleepVisible = () => {
       return selectedStartDate.valueOf() != selectedEndDate.valueOf()
       // selectedStartDate.getTime() != selectedStartDate.getTime();
       // selectedStartDate.toDateString() != selectedStartDate.toDateString();
@@ -73,12 +79,26 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
       setSelectedEndDate(new Date());
     };
 
-    const toastContent = (
-      <View style={styles.episodetoast}>
-        {/* <Text style={styles.episodetoasttext}>Episode added!</Text> */}
-        <Image source={require("../assets/sleephrsaddedicon.png")} style={styles.toastimage}/>
-      </View>
-    );
+    const toastContent = (status="success") => {
+      if (status === "success"){
+        return (
+          <View style={styles.episodetoast}>
+            {/* <Text style={styles.episodetoasttext}>Episode added!</Text> */}
+            <Image source={require("../assets/sleephrsaddedicon.png")} style={styles.toastimage}/>
+          </View>
+        )
+      }
+      return (
+        <View style={styles.episodetoast}>
+          <Text style={styles.episodetoasttext}>End time cannot be before start time</Text>
+        </View>
+      )
+      
+  };
+
+  const dateLabel = (date) => {
+    return (new Date(date).setHours(0,0,0,0) == new Date().setHours(0,0,0,0))? "Today" : "Yesterday";
+  }
 
     return (
       <Modal animationType="slide" transparent={true} visible={isVisible}>
@@ -92,22 +112,26 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
           </View>
           <View style={styles.formContainer}>
             <View style={{ flex:2}}>
-                <Text style={styles.Subtext}>Yesterday</Text>
+                <Text style={styles.Subtext}>
+                  { dateLabel(selectedStartDate) }
+                </Text>
                 <View style={styles.episodetime}>
                     <Text style={styles.labeltext}>Slept at</Text>
                     <View style={styles.timefield}>
-                      <Text style={styles.timelabel}>{selectedStartDate ? selectedStartDate.toLocaleTimeString() : 'No time selected'}</Text>
+                      <Text style={styles.timelabel}>{selectedStartDate ?  selectedStartDate.toLocaleTimeString() : 'No time selected'}</Text>
                       <Button title="Edit" color= "#735BF2" paddingLeft="8" onPress={showStartDatePicker} style={styles.timebutton} />
                         <DateTimePickerModal
                           date={selectedStartDate}
                           isVisible={dateStartPickerVisible}
-                          mode="time"
+                          mode="datetime"
                           onConfirm={handleStartDateConfirm}
                           onCancel={hideStartDatePicker}
+                          minimumDate = {new Date(new Date().getDate() - 1)}
+                          maximumDate = {new Date()}
                         /> 
                     </View>
                 </View>
-                <Text style={styles.Subtext}>Today</Text>
+                <Text style={styles.Subtext}>{ dateLabel(selectedEndDate) }</Text>
                 <View style={styles.episodetime}>
                     <Text style={styles.labeltext}>Woke up at</Text>
                     <View style={styles.timefield}>
@@ -116,9 +140,11 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
                         <DateTimePickerModal
                           date={selectedEndDate}
                           isVisible={dateEndPickerVisible}
-                          mode="time"
+                          mode="datetime"
                           onConfirm={handleEndDateConfirm}
                           onCancel={hideEndDatePicker}
+                          minimumDate = {new Date(new Date().getDate() - 1)}
+                          maximumDate = {new Date()}
                         /> 
                     </View>
                 </View>

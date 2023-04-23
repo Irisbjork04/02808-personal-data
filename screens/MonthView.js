@@ -1,11 +1,41 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useContext, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';  
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import moment from 'moment';
+import DBContext from '../LocalDB/DBContext';
+import { TinitusCollectionName } from '../LocalDB/LocalDb';
+import { frequencyDistribution } from './helper/frequency';
 
 
 const MonthView = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
+    const [tinitusData, setTinitusData] = useState([]);
+    const { db } = useContext(DBContext);
+
+    useEffect(() => {
+      let subTinitus;
+      if (db && db[TinitusCollectionName]) {
+        subTinitus = db[TinitusCollectionName]
+              .find({
+                selector: {
+                  userId: 1
+                }
+              })
+              .sort({ dateTime: 1 })
+              .$.subscribe((occurences) => {
+                // console.log(occurences)
+                setTinitusData(occurences
+                    .map( data => data._data)
+                  );
+                  
+              });
+      }
+
+      return () => {
+          if (subTinitus && subTinitus.unsubscribe) subTinitus.unsubscribe();
+      };
+  }, [db]);
+
 
     const getEventsForDay = (date) => {
         return events.filter((event) => event.date === date);
@@ -14,6 +44,26 @@ const MonthView = ({ navigation }) => {
     const onDayPress = (day) => {
         setSelectedDate(day.dateString);
     };
+
+    const getMarkedDates = () => {
+      let markedDates = {};
+
+      const dateArray = tinitusData.map(data => moment(data.dateTime).format("YYYY-MM-DD"));
+      const frequency = frequencyDistribution(dateArray);
+
+      frequency.forEach(element => {
+        let selectedColor = '#fad2e1';
+        if(element.frequency <= 4) {
+          selectedColor = '#abc4ff';
+        } else if(element.frequency <= 8) {
+          selectedColor = '#bee1e6';
+        }
+
+        markedDates[element.keyword] = {selected: true, marked: true, selectedColor: selectedColor};
+      });
+      
+      return markedDates;
+    }
 
     return (
         <View style={styles.container}>
@@ -30,16 +80,12 @@ const MonthView = ({ navigation }) => {
             <View style={styles.calendarContainer}> 
                 <CalendarList
                     style={{
-                    borderColor: 'gray',
-                    height: 400,
+                      borderColor: 'gray',
+                      height: 400,
                     }}
                     pastScrollRange={24}
                     futureScrollRange={0}
-                    markedDates={{
-                      '2023-04-01': {selected: true, marked: true, selectedColor: 'red'},
-                      '2023-04-02': {marked: true},
-                      '2023-04-03': {selected: true, marked: true, selectedColor: 'blue'},
-                    }}
+                    markedDates={getMarkedDates()}
                     onDayPress={onDayPress} />
                 {/* <Text style={{fontSize: 20, fontWeight: "400",}}>Month View</Text>            */}
             </View> 
