@@ -40,7 +40,7 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
       await db[TinitusCollectionName].insert({ 
         userId: Constants.expoConfig.extra.userId,
         dateTime: selectedDate.toISOString(),
-        notes: ''
+        notes: textvalue
        });
       return true;
     }

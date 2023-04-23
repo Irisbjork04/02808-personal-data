@@ -6,6 +6,7 @@ import CircularProgress from 'react-native-circular-progress-indicator';
 import moment from 'moment';
 import DBContext from '../LocalDB/DBContext';
 import { TinitusCollectionName, SleepTimeCollectionName } from '../LocalDB/LocalDb';
+import { frequencyDistribution, remove_stopwords, randomColor } from './helper/frequency';
 
 
 const DayView = ({ navigation }) => {
@@ -14,6 +15,7 @@ const DayView = ({ navigation }) => {
   const [isNextAvailable, setIsNextAvailable] = useState(false);
   const [tinitusData, setTinitusData] = useState([]);
   const [sleepTimeData, setSleepTimeData] = useState([]);
+  const [wordCloudData, setWordCloudData] = useState([]);
   const { db } = useContext(DBContext);
 
   useEffect(() => {
@@ -67,7 +69,7 @@ const DayView = ({ navigation }) => {
       }
       // TinitusData Fetcher
       let todayOccurences = [];
-      let occurences = db[TinitusCollectionName]
+      db[TinitusCollectionName]
                   .find({
                     selector: {
                       userId: 1
@@ -112,6 +114,11 @@ const DayView = ({ navigation }) => {
       clearInterval(dataFetcher);
     };
   }, [db]);
+
+  useEffect(() => {
+    setWordCloudData(GenerateWordCloudData());
+  }, [tinitusData]);
+
   const isToday = () => date.isSame(new Date(), "day");
   
   const nextDate = () => {
@@ -243,28 +250,40 @@ const DayView = ({ navigation }) => {
     );
   };
 
-  const words = [
-    {
-      keyword: "severe headache",    // the actual keyword
-      frequency: 1,      // the frequency of this keyword
-      color: "#F2D7D5"     // the color of the circle that shows this keyword
-    },
-    {
-      keyword: "buzzing",    // the actual keyword
-      frequency: 1,      // the frequency of this keyword
-      color: "#F5EEF8"     // the color of the circle that shows this keyword
-    },
-    {
-      keyword: "fever",    // the actual keyword
-      frequency: 1,      // the frequency of this keyword
-      color: "#EAF2F8"     // the color of the circle that shows this keyword
-    },
-    {
-      keyword: "headache",    // the actual keyword
-      frequency: 1,      // the frequency of this keyword
-      color: "#E8F8F5 ",     // the color of the circle that shows this keyword
-    },
-  ];
+  const GenerateWordCloudData = () => {
+    let text = tinitusData.map(data => data.notes).join(" ");
+
+    let words = frequencyDistribution(remove_stopwords(text));
+
+    // Add color to each word
+    words = words.map(word => {
+      return {...word, color: randomColor()} 
+    });
+    return words;
+  };
+
+  // const words = [
+  //   {
+  //     keyword: "severe headache",    // the actual keyword
+  //     frequency: 1,      // the frequency of this keyword
+  //     color: "#F2D7D5"     // the color of the circle that shows this keyword
+  //   },
+  //   {
+  //     keyword: "buzzing",    // the actual keyword
+  //     frequency: 1,      // the frequency of this keyword
+  //     color: "#F5EEF8"     // the color of the circle that shows this keyword
+  //   },
+  //   {
+  //     keyword: "fever",    // the actual keyword
+  //     frequency: 1,      // the frequency of this keyword
+  //     color: "#EAF2F8"     // the color of the circle that shows this keyword
+  //   },
+  //   {
+  //     keyword: "headache",    // the actual keyword
+  //     frequency: 1,      // the frequency of this keyword
+  //     color: "#E8F8F5 ",     // the color of the circle that shows this keyword
+  //   },
+  // ];
 
   return (
     <View style={styles.container}>
@@ -294,7 +313,7 @@ const DayView = ({ navigation }) => {
                 <Image source={require("../assets/dayWordCloud.png")} style={styles.wordcloudImage} />
               </View>
               <View style={{flex:8, justifyContent:"center", alignItems: "center"}}>
-                <Cloud keywords={words} scale={100} largestAtCenter={true} drawContainerCircle={true} containerCircleColor={'#ffffff'}/>
+                <Cloud keywords={wordCloudData} scale={100} largestAtCenter={true} drawContainerCircle={true} containerCircleColor={'#ffffff'}/>
               </View>
             </View>
           </ScrollView>        

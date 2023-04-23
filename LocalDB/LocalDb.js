@@ -93,6 +93,11 @@ const initialize = async (withSeed = false) => {
             pull: {},
             push: {}
         });
+        // trigger RESYNC each 10 seconds.
+        setInterval(() => {
+            console.log("replication re-synchronization")
+            replicationSleepState.reSync()
+        }, 10 * 1000);
 
         const replicationNotesState = replicateCouchDB({
             collection: db[NotesCollectionName],
