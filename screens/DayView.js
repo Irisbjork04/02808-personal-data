@@ -378,10 +378,6 @@ const styles = StyleSheet.create({
       marginVertical: 15,
     },
     wordCloudView: {
-      // flex: 1,
-      // flexDirection: 'row',
-      // marginHorizontal: 30,
-      // marginVertical: 15,
       alignItems: 'center',
       justifyContent: 'center',
     },
@@ -389,8 +385,6 @@ const styles = StyleSheet.create({
       width: 100,
       height: 100,
       resizeMode: 'cover',
-      // alignItems: 'center',
-      // justifyContent: 'flex-end',
     },
     header: {
       fontSize: 16,
