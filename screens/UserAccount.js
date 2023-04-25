@@ -34,22 +34,37 @@ export default function UserAccountScreen({showToast, setToastContent, setUserCr
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>User Account</Text>
-      <Text style={styles.text}>Name</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setName}
-        value={name}
-        placeholder="Enter your name"
-      />
-      <Text style={styles.text}>Email</Text>
-      <TextInput
-        style={styles.input}
-        onChangeText={setEmail}
-        value={email}
-        placeholder="Enter your email"
-      />
-      <Button title="Submit" onPress={onFormSubmit} />
+      <View style={styles.formContainer}>
+          <Image source={require("../assets/timinusUse.png")} style={styles.upperImageContainer} />
+          <View style={{flex:.1, flexDirection: "row", marginHorizontal:30, marginBottom:20}}>
+            <Text style={{fontSize: 13, fontWeight: "300", color: "#061428", textAlign: "center"}}>We need the below information to remember you.
+So that you can access your data anytime!!</Text>
+          </View>
+          <View style={styles.inputView}>
+            <View style={{  justifyContent:"flex-start", marginHorizontal: 70, marginVertical: 8}}>
+              <Text style={styles.labeltext}>Name</Text>
+            </View>           
+            <TextInput
+              style={styles.input}
+              onChangeText={setName}
+              value={name}
+              placeholder="Enter your name"
+            />
+              
+            <View style={{  justifyContent:"flex-start", marginHorizontal: 70, marginVertical: 8}}>
+              <Text style={styles.labeltext}>Email</Text>
+            </View>
+            <TextInput
+              style={styles.input}
+              onChangeText={setEmail}
+              value={email}
+              placeholder="Enter your email"
+            />
+            <View style={styles.buttondiv}>
+              <Button title="Remember Me" color="#735BF2" onPress={onFormSubmit} />
+            </View>
+          </View>
+      </View>
     </View>
   );
 
@@ -58,28 +73,40 @@ export default function UserAccountScreen({showToast, setToastContent, setUserCr
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    // justifyContent: 'center',
-    paddingTop: 40,
-    paddingHorizontal: 20,
+    flexDirection: 'column',
   },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: 'black',
+  formContainer: {
+    flex: 1,
+    flexDirection: 'column',
   },
-  text: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: 'black',
-    marginTop: 20,
+  upperImageContainer: {
+    flex:.9,
+    flexDirection: 'row',
+  },
+  inputView: {
+    flex: 1,
   },
   input: {
-    borderWidth: 1,
-    borderColor: '#777',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+    borderBottomWidth: 1,
+    backgroundColor: '#F6F4FA',
+    borderBottomColor: '#8348EF',
     padding: 8,
-    margin: 10,
-    width: 200,
+    // margin: -4,
+    // width: 100,
+    marginHorizontal: 60,
+    fontSize: 16,
+  },
+  labeltext: {
+    color: '#2A1342',
+    fontSize: 12,
+    fontWeight: '400',    
+  },
+  buttondiv: {
+    flex:2,
+    flexDirection: 'column',
+    marginHorizontal: 60,
+    marginVertical: 40,
   },
 });
