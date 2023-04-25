@@ -1,10 +1,43 @@
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useContext, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';  
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
-import moment from 'moment'
+import moment from 'moment';
+import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
+import { TinitusCollectionName } from '../LocalDB/LocalDb';
+import { frequencyDistribution } from './helper/frequency';
+
 
 const MonthView = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
+    const [tinitusData, setTinitusData] = useState([]);
+    const { db } = useContext(DBContext);
+    const { userCredentials } = useContext(CurrentUserContext);
+
+    useEffect(() => {
+      let subTinitus;
+      if (db && userCredentials && db[TinitusCollectionName]) {
+        subTinitus = db[TinitusCollectionName]
+              .find({
+                selector: {
+                  userId: userCredentials.email
+                }
+              })
+              .sort({ dateTime: 1 })
+              .$.subscribe((occurences) => {
+                // console.log(occurences)
+                setTinitusData(occurences
+                    .map( data => data._data)
+                  );
+                  
+              });
+      }
+
+      return () => {
+          if (subTinitus && subTinitus.unsubscribe) subTinitus.unsubscribe();
+      };
+  }, []);
+
 
     const getEventsForDay = (date) => {
         return events.filter((event) => event.date === date);
@@ -13,6 +46,26 @@ const MonthView = ({ navigation }) => {
     const onDayPress = (day) => {
         setSelectedDate(day.dateString);
     };
+
+    const getMarkedDates = () => {
+      let markedDates = {};
+
+      const dateArray = tinitusData.map(data => moment(data.dateTime).format("YYYY-MM-DD"));
+      const frequency = frequencyDistribution(dateArray);
+
+      frequency.forEach(element => {
+        let selectedColor = '#fad2e1';
+        if(element.frequency <= 4) {
+          selectedColor = '#abc4ff';
+        } else if(element.frequency <= 8) {
+          selectedColor = '#bee1e6';
+        }
+
+        markedDates[element.keyword] = {selected: true, marked: true, selectedColor: selectedColor};
+      });
+      
+      return markedDates;
+    }
 
     return (
         <View style={styles.container}>
@@ -24,65 +77,27 @@ const MonthView = ({ navigation }) => {
                 <Image source={require("../assets/circleicon.png")} style={styles.imageNote} />
                 <View style={{flex:2}}>
                     <Text style={{fontSize: 12, fontWeight: "300", color: "#061428"}}>Circle sizes indicate the number of occurrences of tinnitus episodes in a day.</Text>
-                </View>
-               
+                </View>              
             </View>
             <View style={styles.calendarContainer}> 
-                <CalendarList 
+                <CalendarList
                     style={{
-                    borderColor: 'gray',
-                    height: 400
+                      borderColor: 'gray',
+                      height: 400,
                     }}
+                    pastScrollRange={24}
+                    futureScrollRange={0}
+                    markedDates={getMarkedDates()}
                     onDayPress={onDayPress} />
                 {/* <Text style={{fontSize: 20, fontWeight: "400",}}>Month View</Text>            */}
             </View> 
   
             <View style={styles.graphscontainner}>
-              <ScrollView style={styles.scrollView}>
+              {/* <ScrollView style={styles.scrollView}>
                 <Text style={{ fontSize: 10 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-            eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-            minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-            aliquip ex ea commodo consequat. Duis aute irure dolor in
-            reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-            pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-            culpa qui officia deserunt mollit anim id est laborum.</Text>
-              </ScrollView>
+                  eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
+                  minim veniam, quis nostrud 
+              </ScrollView> */}
             </View>   
   
           </View>
@@ -90,6 +105,7 @@ const MonthView = ({ navigation }) => {
       );
   }
   
+
   const styles = StyleSheet.create({
       container: {
         flex: 1,
@@ -138,5 +154,7 @@ const MonthView = ({ navigation }) => {
         marginVertical: 15,
       },
     });
+
+  
 
 export default MonthView;

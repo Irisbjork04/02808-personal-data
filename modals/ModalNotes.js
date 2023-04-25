@@ -1,8 +1,13 @@
 import { StatusBar } from 'expo-status-bar'; //This is a component that we can use to show the status bar at the top of the screen
 import { StyleSheet, Text, View, Image, SafeAreaView, ImageBackground, Modal, Pressable } from 'react-native';  //Importing the components we need
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
 
 export default function ModalNotesAdd({ isVisible, children, onClose }) {
+  const { db } = useContext(DBContext);
+  const { userCredentials } = useContext(CurrentUserContext);
+  
     return (
       <Modal animationType="slide" transparent={true} visible={isVisible}>
         <View style={styles.modalContent}>

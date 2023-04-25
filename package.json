@@ -9,7 +9,11 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@expo/webpack-config": "^18.0.1",
+    "@chartiful/react-native-chart-builder": "^0.1.8",
+    "@chartiful/react-native-vertical-bar-graph": "^0.1.2",
+    "@expo/webpack-config": "^18.0.4",
+    "@observablehq/how-to-embed-a-notebook-in-a-react-app": "https://api.observablehq.com/@observablehq/how-to-embed-a-notebook-in-a-react-app.tgz?v=3",
+    "@observablehq/runtime": "^5.6.0",
     "@react-native-community/datetimepicker": "6.7.3",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/material-top-tabs": "^6.6.2",
@@ -18,26 +22,35 @@
     "@react-navigation/stack": "^6.3.16",
     "expo": "~48.0.6",
     "expo-status-bar": "~1.4.4",
-    "expo-updates": "~0.16.3",
+    "expo-updates": "~0.16.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-native": "0.71.3",
+    "react-native": "0.71.6",
     "react-native-calendar-picker": "^7.1.4",
     "react-native-calendars": "^1.1294.0",
+    "react-native-chart": "^1.0.8-beta",
+    "react-native-chart-kit": "^6.12.0",
+    "react-native-circular-progress-indicator": "^4.4.2",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-modal-datetime-picker": "^15.0.0",
     "react-native-reanimated": "~2.14.4",
     "react-native-root-toast": "^3.4.1",
-    "react-native-safe-area-context": "^4.5.0",
+    "react-native-safe-area-context": "4.5.0",
     "react-native-screens": "~3.20.0",
+    "react-native-svg": "13.4.0",
     "react-native-tab-view": "^3.5.1",
     "react-native-web": "~0.18.10",
+    "react-native-webview": "11.26.0",
     "react-native-week-view": "^0.28.3",
+    "react-native-word-cloud": "^1.0.7",
     "react-navigation": "^4.4.4",
+    "rxdb": "^14.8.2",
+    "rxjs": "^7.8.0",
     "setimmediate": "^1.0.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@expo/webpack-config": "^18.0.4"
   },
   "private": true
 }

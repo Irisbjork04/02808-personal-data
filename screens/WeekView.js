@@ -1,12 +1,125 @@
-import React, { Component, useState, useEffect } from 'react';
-import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, TouchableOpacity, ImageBackground, Modal, Pressable, TouchableHighlight} from 'react-native';  
+import React, { Component, useState, useEffect, useContext } from 'react';
+import {LineChart, BarChart, PieChart, ProgressChart, ContributionGraph, StackedBarChart} from 'react-native-chart-kit';
+import { StyleSheet, Text, View, Image, SafeAreaView, Dimensions, ScrollView, TouchableOpacity, ImageBackground, Modal, Pressable, TouchableHighlight} from 'react-native';  
 // import WeekView from 'react-native-week-view';
+import Cloud from 'react-native-word-cloud';
 import moment from 'moment'
+import CircularProgress from 'react-native-circular-progress-indicator';
+// import Notebook from '../notebook/BarChart';
+import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
+import { TinitusCollectionName, SleepTimeCollectionName } from '../LocalDB/LocalDb';
+import { frequencyDistribution, remove_stopwords, randomColorWithout } from './helper/frequency';
 
 const WeekView = ({ navigation }) => {
 
     const [date, setDate] = useState(moment());
     const [isNextAvailable, setIsNextAvailable] = useState(false);
+    const [tinitusData, setTinitusData] = useState([]);
+    const [sleepTimeData, setSleepTimeData] = useState([]);
+    const [wordCloudData, setWordCloudData] = useState([]);
+    const { db } = useContext(DBContext);
+    const { userCredentials } = useContext(CurrentUserContext);
+
+    useEffect(() => {
+        let subTinitus, subSleepTime;
+        if (db &&  db[TinitusCollectionName]) {
+          subTinitus = db[TinitusCollectionName]
+                .find({
+                  selector: {
+                    userId: userCredentials.email
+                  }
+                })
+                .sort({ dateTime: 1 })
+                .$.subscribe((occurences) => {
+                  // console.log(occurences)
+                  setTinitusData(occurences
+                    .filter( data => moment(data._data.dateTime).isSame(date, 'week'))
+                    .map( data => data._data)
+                    );
+                    
+                });
+        }
+
+        if (db &&  db[SleepTimeCollectionName]) {
+          subSleepTime = db[SleepTimeCollectionName]
+                .find({
+                  selector: {
+                    userId: userCredentials.email
+                  }
+                })
+                .sort({ endDateTime: 1 })
+                .$.subscribe((sleepTimes) => {
+                  // console.log(sleepTimes)
+                  setSleepTimeData(sleepTimes
+                    .filter( data => moment(data._data.endDateTime).isSame(date, 'week'))
+                    .map( data => data._data)
+                    );
+                });
+        }
+
+        return () => {
+            if (subTinitus && subTinitus.unsubscribe) subTinitus.unsubscribe();
+            if (subSleepTime && subSleepTime.unsubscribe) subSleepTime.unsubscribe();
+        };
+    }, [date]);
+
+    // useEffect(() => { // multiinstance replication is not working, so using this hack to update the data
+    //   let dataFetcher = setInterval(() => {
+    //     if(!db) {  
+    //       return;
+    //     }
+    //     // TinitusData Fetcher
+    //     let todayOccurences = [];
+    //     db[TinitusCollectionName]
+    //           .find({
+    //             selector: {
+    //               userId: userCredentials.email
+    //             }
+    //           })
+    //           .sort({ dateTime: 1 })
+    //           .exec()
+    //           .then(occurences => {
+    //             // console.log(occurences);
+    //             todayOccurences = occurences.filter( data => moment(data._data.dateTime).isSame(date, 'week'))
+    //               .map( data => data._data);
+    //           });
+
+                    
+  
+    //     if(todayOccurences.length != tinitusData.length) {
+    //       setTinitusData(todayOccurences);
+    //     }
+
+    //     // SleepTimeData Fetcher
+    //     let todaySleepTimes = [];
+    //     db[SleepTimeCollectionName]
+    //         .find({
+    //           selector: {
+    //             userId: userCredentials.email
+    //           }
+    //         })
+    //         .sort({ endDateTime: 1 })
+    //         .exec()
+    //         .then(sleepTimes => {
+    //           // console.log(sleepTimes);
+    //           todaySleepTimes = sleepTimes.filter( data => moment(data._data.endDateTime).isSame(date, 'week'))
+    //             .map( data => data._data);
+    //         });
+
+    //     if(todaySleepTimes.length != sleepTimeData.length) {
+    //       setSleepTimeData(todaySleepTimes);
+    //     }
+    //   }, 60000);
+  
+    //   return () => {
+    //     clearInterval(dataFetcher);
+    //   };
+    // }, [db]);
+
+    useEffect(() => {
+      setWordCloudData(GenerateWordCloudData());
+    }, [tinitusData]);
 
     const nextWeek = () => {
       const newDate = date.clone().add(1, 'week');
@@ -19,12 +132,18 @@ const WeekView = ({ navigation }) => {
       setIsNextAvailable(newDate.week() != moment().week());
       setDate(newDate);
     };
+    
+    const selectedWeek = () => {
+      return {
+        startDate: date.clone().startOf('week'),
+        endDate: date.clone().endOf('week')
+      }
+    };
 
     const displayWeek = () => {
-      let weekStart = date.clone().startOf('week');
-      let weekEnd = date.clone().endOf('week');
-      return weekStart.format("MMMM D ") + "-" +weekEnd.format("D YYYY");
-    }
+      let week = selectedWeek();
+      return week.startDate.format("MMMM D ") + "-" +week.endDate.format("D YYYY");
+    };
     
     const nextArrow = () => {
       if(isNextAvailable) {
@@ -38,7 +157,105 @@ const WeekView = ({ navigation }) => {
           <Image source={require("../assets/arrowInactive.png")} style={styles.image}/>  
         )
       }
-    }
+    };
+
+    const MyBarchartData = () => {
+      let data = [0,0,0,0,0,0,0];
+
+      tinitusData
+        .forEach( d => {
+          let day = moment(d.dateTime).isoWeekday();
+          data[day-1] = data[day-1] + 1;
+        });
+      
+      return data;
+    };
+
+    const MyProgressChart = () => {
+      let totalSleepTime = sleepTimeData.reduce((acc, data) => {
+        return acc + moment(data.endDateTime).diff(moment(data.startDateTime)); 
+      }, 0) / (1000 * 60 * 60);
+  
+      totalSleepTime = Math.trunc(totalSleepTime); // Remove decimal part
+
+      return (
+        <View>
+          <CircularProgress
+            value={totalSleepTime}
+            // valuePrefix = 'Rs'
+            valueSuffix = 'hrs'
+            radius={80}
+            maxValue={8}
+            duration={1000}
+            title="Slept"
+            titleStyle = {{fontSize: 20, fontWeight: "400", color: "#061428"}}
+            inActiveStrokeOpacity={0.5}
+            activeStrokeWidth={20}
+            activeStrokeColor = '#165DFF'
+            inActiveStrokeWidth={20}
+            progressValueStyle={{ fontWeight: '100', color: '#061428', fontSize: 40 }}
+          />
+        </View>
+      );
+    };
+    const MyBarChart = () => {
+      return (
+        <View>
+          <View style={styles.chartTextLabel}>
+            <Image source={require("../assets/barIcon.png")} style={styles.barImage} />
+            <View style={{flex:2}}>
+              <Text style={{fontSize: 12, fontWeight: "400", color: "#061428"}}>No. of Episode(s)</Text>
+            </View>              
+          </View>
+          <BarChart
+            data={{
+              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+              datasets: [
+                {
+                  data: MyBarchartData(),
+                },
+              ],
+            }}
+            width={Dimensions.get('window').width - 16}
+            height={220}
+            yAxisLabel=""
+            // yAxisLabel={'Rs'}
+            withVerticalLabels = {true}
+            withHorizontalLabels = {true}
+            withInnerLines={true}
+            // showValuesOnTopOfBars={true}
+            chartConfig={{
+              backgroundColor: '#ffffff',
+              backgroundGradientFrom: '#ffffff',
+              backgroundGradientTo: '#ffffff',
+              decimalPlaces: 0,
+              color: (opacity = 1) => `rgba(139,0,0, ${opacity})`,
+              barPercentage: .8,
+              propsForVerticalLabels: { fontSize: 12, fontWeight: "300" },
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            style={{
+              marginVertical: 8,
+              borderRadius: 16,
+            }}
+          />
+        </View>
+      );
+    };
+
+    const GenerateWordCloudData = () => {
+      let text = tinitusData.map(data => data.notes).join(" ");
+  
+      let words = frequencyDistribution(remove_stopwords(text));
+  
+      // Add color to each word
+      words = words.map(word => {
+        return {...word, color: randomColorWithout("#000000")} 
+      });
+      return words;
+    };
 
     return (
         <View style={styles.container}>
@@ -57,49 +274,20 @@ const WeekView = ({ navigation }) => {
 
           <View style={styles.graphscontainner}>
             <ScrollView style={styles.scrollView}>
-              <Text style={{ fontSize: 10 }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Duis aute irure dolor in
-          reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-          pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-          culpa qui officia deserunt mollit anim id est laborum.</Text>
+              <View style={styles.circularProgressBarView}>
+                <MyProgressChart />
+              </View>
+              <View style={styles.barView}>
+                <MyBarChart/>
+              </View>
+              <View>
+                <View style={{flex:4, flexDirection: "row", justifyContent:"flex-end", marginHorizontal:20, marginBottom: -35 }}>
+                  <Image source={require("../assets/weekWordCloud.png")} style={styles.wordcloudImage} />
+                </View>
+                <View style={{flex:1, justifyContent:"center", alignItems: "center"}}>
+                  <Cloud keywords={wordCloudData} scale={500} largestAtCenter={true} drawContainerCircle={false} containerCircleColor={'#ffffff'}/>
+                </View>
+              </View>
             </ScrollView>
           </View>   
 
@@ -150,6 +338,40 @@ const styles = StyleSheet.create({
     scrollView: {
       marginHorizontal: 10,
       marginVertical: 15,
+    },
+    circularProgressBarView: {
+      marginHorizontal: 10,
+      marginVertical: 15,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    barView: {
+      marginVertical: 15,
+    },
+    header: {
+      fontSize: 16,
+    },
+    chartTextLabel: {
+      flex: 2,      
+      flexDirection: 'row',
+      marginHorizontal: 10,
+      marginVertical: 4,
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+    barImage:{
+      height: 20,
+      width: 10,
+      marginRight: 10,
+    },
+    wordCloudView: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    wordcloudImage: {
+      width: 100,
+      height: 100,
+      resizeMode: 'cover',
     },
   });
 

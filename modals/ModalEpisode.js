@@ -1,16 +1,21 @@
 import { StatusBar } from 'expo-status-bar'; //This is a component that we can use to show the status bar at the top of the screen
-import React, { Component, useState } from 'react';
+import React, { Component, useState, useContext, useEffect } from 'react';
 import { StyleSheet, TextInput, Text, View, Image, TouchableOpacity, SafeAreaView, ImageBackground, Modal, Pressable , Button} from 'react-native';  //Importing the components we need
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-
+import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
+import { TinitusCollectionName } from '../LocalDB/LocalDb';
+import Constants from 'expo-constants';
 
 export default function ModalEpisodeAdd({ isVisible, children, onClose, showToast, setToastContent  }) {
 
-    const [textvalue, onChangeText] = useState('Type here to take your note!');
+    const [textvalue, onChangeText] = useState('');
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [datePickerVisible, setDatePickerVisible] = useState(false);
+    const { db } = useContext(DBContext);
+    const { userCredentials } = useContext(CurrentUserContext);
 
     const showDatePicker = () => {
       setDatePickerVisible(true);
@@ -26,10 +31,22 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
     };
 
     const onButtonPress = () => {
+      saveOccurance().then();
       setToastContent(toastContent);
       showToast();  
       onClose();
     };
+
+    const saveOccurance = async () => {
+      console.log("saved Tinitus orrcurence")
+      console.log(userCredentials)
+      await db[TinitusCollectionName].insert({ 
+        userId: userCredentials.email,
+        dateTime: selectedDate.toISOString(),
+        notes: textvalue
+       });
+      return true;
+    }
 
     const toastContent = (
       <View style={styles.episodetoast}>
@@ -73,6 +90,7 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
                         <TextInput
                             style={styles.multilinetextinput}
                             value={textvalue}
+                            placeholder="Type here to take your note!"
                             onChangeText={onChangeText}
                             multiline={true}
                             editable={true}

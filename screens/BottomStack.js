@@ -45,32 +45,32 @@ const BottomStack = ({ navigation, showToast, setToastContent }) => {
     const onNotesModalClose = () => {
         setIsNotesModalVisible(false);
     };
-
+    
     return (
-        <View style={styles.container}>
+      <View style={styles.container}>
 
-          <View style={styles.episode}>
-            <TouchableOpacity onPress={onAddEpisodeModal}>    
-                <Image source={require("../assets/bigiconepi.png")} style={styles.image} />        
-            </TouchableOpacity>
-            <ModalEpisodeAdd isVisible={isEpisodeModalVisible} onClose={onEpisodeModalClose} showToast={showToast} setToastContent={setToastContent} />
-          </View>
-          
-          <View style={styles.sleep}>
-            <TouchableOpacity onPress={onAddSleepModal}>    
-                <Image source={require("../assets/bigiconsleep.png")} style={styles.image} />        
-            </TouchableOpacity>
-            <ModalSleepHrsAdd isVisible={isSleepModalVisible} onClose={onSleepModalClose} showToast={showToast} setToastContent={setToastContent}/>            
-          </View>
-
-          <View style={styles.notes}>
-            <TouchableOpacity onPress={onAddNotesModal}>    
-                <Image source={require("../assets/bigiconnotes.png")} style={styles.image} />       
-            </TouchableOpacity>
-            <ModalNotesAdd isVisible={isNotesModalVisible} onClose={onNotesModalClose} />     
-          </View>
+        <View style={styles.episode}>
+          <TouchableOpacity onPress={onAddEpisodeModal}>    
+              <Image source={require("../assets/bigiconepi.png")} style={styles.image} />        
+          </TouchableOpacity>
+          { isEpisodeModalVisible && <ModalEpisodeAdd isVisible={isEpisodeModalVisible} onClose={onEpisodeModalClose} showToast={showToast} setToastContent={setToastContent} />}
         </View>
-    );
+        
+        <View style={styles.sleep}>
+          <TouchableOpacity onPress={onAddSleepModal}>    
+              <Image source={require("../assets/bigiconsleep.png")} style={styles.image} />        
+          </TouchableOpacity>
+          { isSleepModalVisible && <ModalSleepHrsAdd isVisible={isSleepModalVisible} onClose={onSleepModalClose} showToast={showToast} setToastContent={setToastContent}/> }
+        </View>
+
+        <View style={styles.notes}>
+          <TouchableOpacity onPress={onAddNotesModal}>    
+              <Image source={require("../assets/bigiconnotes.png")} style={styles.image} />       
+          </TouchableOpacity>
+          { isNotesModalVisible && <ModalNotesAdd isVisible={isNotesModalVisible} onClose={onNotesModalClose} />  }  
+        </View>
+      </View>
+  );
 }
 
 const styles = StyleSheet.create({

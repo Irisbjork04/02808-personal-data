@@ -5,12 +5,11 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
-    // "userInterfaceStyle": "light",
     "userInterfaceStyle": "automatic",
     "splash": {
-    "image": "./assets/splash.png",
-    "resizeMode": "contain",
-    "backgroundColor": "#ffffff"
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
     "assetBundlePatterns": [
       "**/*"
@@ -22,10 +21,25 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.sifat.noor.tminus"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "userId": "johndoe@gmail.com",
+      "apiUrl": "my-azcdb-health-track.westeurope.azurecontainer.io:5984",
+      "schema": {
+        "TinitusCollection": "tinitus-dev",
+        "SleepTimeCollection": "sleeptime-dev",
+        "NotesCollection": "notes-dev",
+        "UserCollection": "user-dev",
+        "LocalCollection": "local-dev"
+      },
+      "eas": {
+        "projectId": "8730cff3-293e-47b3-b0a0-32bc2db9f27c"
+      }
     }
   }
 }
