@@ -7,6 +7,7 @@ import moment from 'moment'
 import CircularProgress from 'react-native-circular-progress-indicator';
 // import Notebook from '../notebook/BarChart';
 import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
 import { TinitusCollectionName, SleepTimeCollectionName } from '../LocalDB/LocalDb';
 import { frequencyDistribution, remove_stopwords, randomColorWithout } from './helper/frequency';
 
@@ -18,14 +19,15 @@ const WeekView = ({ navigation }) => {
     const [sleepTimeData, setSleepTimeData] = useState([]);
     const [wordCloudData, setWordCloudData] = useState([]);
     const { db } = useContext(DBContext);
+    const { userCredentials } = useContext(CurrentUserContext);
 
     useEffect(() => {
         let subTinitus, subSleepTime;
-        if (db && db[TinitusCollectionName]) {
+        if (db &&  db[TinitusCollectionName]) {
           subTinitus = db[TinitusCollectionName]
                 .find({
                   selector: {
-                    userId: 1
+                    userId: userCredentials.email
                   }
                 })
                 .sort({ dateTime: 1 })
@@ -39,11 +41,11 @@ const WeekView = ({ navigation }) => {
                 });
         }
 
-        if (db && db[SleepTimeCollectionName]) {
+        if (db &&  db[SleepTimeCollectionName]) {
           subSleepTime = db[SleepTimeCollectionName]
                 .find({
                   selector: {
-                    userId: 1
+                    userId: userCredentials.email
                   }
                 })
                 .sort({ endDateTime: 1 })
@@ -60,60 +62,60 @@ const WeekView = ({ navigation }) => {
             if (subTinitus && subTinitus.unsubscribe) subTinitus.unsubscribe();
             if (subSleepTime && subSleepTime.unsubscribe) subSleepTime.unsubscribe();
         };
-    }, [db,date]);
+    }, [date]);
 
-    useEffect(() => { // multiinstance replication is not working, so using this hack to update the data
-      let dataFetcher = setInterval(() => {
-        if(!db) {  
-          return;
-        }
-        // TinitusData Fetcher
-        let todayOccurences = [];
-        db[TinitusCollectionName]
-              .find({
-                selector: {
-                  userId: 1
-                }
-              })
-              .sort({ dateTime: 1 })
-              .exec()
-              .then(occurences => {
-                // console.log(occurences);
-                todayOccurences = occurences.filter( data => moment(data._data.dateTime).isSame(date, 'week'))
-                  .map( data => data._data);
-              });
+    // useEffect(() => { // multiinstance replication is not working, so using this hack to update the data
+    //   let dataFetcher = setInterval(() => {
+    //     if(!db) {  
+    //       return;
+    //     }
+    //     // TinitusData Fetcher
+    //     let todayOccurences = [];
+    //     db[TinitusCollectionName]
+    //           .find({
+    //             selector: {
+    //               userId: userCredentials.email
+    //             }
+    //           })
+    //           .sort({ dateTime: 1 })
+    //           .exec()
+    //           .then(occurences => {
+    //             // console.log(occurences);
+    //             todayOccurences = occurences.filter( data => moment(data._data.dateTime).isSame(date, 'week'))
+    //               .map( data => data._data);
+    //           });
 
                     
   
-        if(todayOccurences.length != tinitusData.length) {
-          setTinitusData(todayOccurences);
-        }
+    //     if(todayOccurences.length != tinitusData.length) {
+    //       setTinitusData(todayOccurences);
+    //     }
 
-        // SleepTimeData Fetcher
-        let todaySleepTimes = [];
-        db[SleepTimeCollectionName]
-            .find({
-              selector: {
-                userId: 1
-              }
-            })
-            .sort({ endDateTime: 1 })
-            .exec()
-            .then(sleepTimes => {
-              // console.log(sleepTimes);
-              todaySleepTimes = sleepTimes.filter( data => moment(data._data.endDateTime).isSame(date, 'week'))
-                .map( data => data._data);
-            });
+    //     // SleepTimeData Fetcher
+    //     let todaySleepTimes = [];
+    //     db[SleepTimeCollectionName]
+    //         .find({
+    //           selector: {
+    //             userId: userCredentials.email
+    //           }
+    //         })
+    //         .sort({ endDateTime: 1 })
+    //         .exec()
+    //         .then(sleepTimes => {
+    //           // console.log(sleepTimes);
+    //           todaySleepTimes = sleepTimes.filter( data => moment(data._data.endDateTime).isSame(date, 'week'))
+    //             .map( data => data._data);
+    //         });
 
-        if(todaySleepTimes.length != sleepTimeData.length) {
-          setSleepTimeData(todaySleepTimes);
-        }
-      }, 60000);
+    //     if(todaySleepTimes.length != sleepTimeData.length) {
+    //       setSleepTimeData(todaySleepTimes);
+    //     }
+    //   }, 60000);
   
-      return () => {
-        clearInterval(dataFetcher);
-      };
-    }, [db]);
+    //   return () => {
+    //     clearInterval(dataFetcher);
+    //   };
+    // }, [db]);
 
     useEffect(() => {
       setWordCloudData(GenerateWordCloudData());

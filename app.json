@@ -28,8 +28,22 @@
       "favicon": "./assets/favicon.png"
     },
     "extra": {
-      "userId": 1,
-      "apiUrl": "192.168.0.101:5984"
+      "userId": "johndoe@gmail.com",
+      "apiUrl": "my-azcdb-health-track.westeurope.azurecontainer.io:5984",
+      "schema": {
+        "TinitusCollection": "tinitus-dev",
+        "SleepTimeCollection": "sleeptime-dev",
+        "NotesCollection": "notes-dev",
+        "UserCollection": "user-dev",
+        "LocalCollection": "local-dev"
+      }
+      // "schema": {
+      //   "TinitusCollection": "tinitus",
+      //   "SleepTimeCollection": "sleeptime",
+      //   "NotesCollection": "notes",
+      //   "UserCollection": "user",
+      //   "LocalCollection": "local"
+      // }
     }
   }
 }

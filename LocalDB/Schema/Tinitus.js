@@ -17,7 +17,7 @@ const tinitusSchema = {
             maxLength: 100 // <- the primary key must have set maxLength
         },
         userId: {
-            "type": "number"
+            "type": "string"
         },
         dateTime: {
             type: 'string',

@@ -17,7 +17,7 @@ const sleepSchema = {
             maxLength: 100 
         },
         userId: {
-            type: 'number'
+            type: 'string'
         },
         startDateTime: {
             type: 'string'

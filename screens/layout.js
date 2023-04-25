@@ -1,18 +1,41 @@
 import { StatusBar } from 'expo-status-bar'; //This is a component that we can use to show the status bar at the top of the screen
-import React, {  useState, useEffect } from 'react';
+import React, {  useState, useEffect, useContext } from 'react';
 import { StyleSheet, Text, View, Image, SafeAreaView, ImageBackground, Modal, Pressable, TouchableHighlight, TouchableOpacity } from 'react-native';  //Importing the components we need
 import BottomStack from './BottomStack';
 import TopStack from './TopStack';
 import UserAccountScreen from "./UserAccount";
 import Toast from 'react-native-root-toast';
 import setimmediate from 'setimmediate';
+import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
+import { LocalCollectionName } from '../LocalDB/LocalDb';
 
 
 const LayoutScreen = ({ navigation }) => {
 
     const [toastVisible, setToastVisible] = useState(false);
     const [toastContent, setToastContent] = useState("This is a message!!");
-    const [userCredentials, setUserCredentials] = useState({ name: '', email: '', userId: '' });
+    const [userCredentials, setUserCredentials] = useState(null);
+    const { db } = useContext(DBContext);
+
+    useEffect(() => {
+      let subLocal;
+      if (db && db[LocalCollectionName]) {
+        subLocal = db[LocalCollectionName]
+              .findOne()
+              .$.subscribe((data) => {
+                if(!data) return;
+
+                console.log("User Data exist in Local Storage: ", data);
+                setUserCredentials(data._data);
+              });
+      }
+
+      return () => {
+        if (subLocal && subLocal.unsubscribe) subLocal.unsubscribe();
+      };
+    }, []);
+
 
     const showToast = () => { 
       setToastVisible(true);
@@ -34,16 +57,17 @@ const LayoutScreen = ({ navigation }) => {
     );
 
 
-    if(!userCredentials.userId) {
+    if(!userCredentials) {
       return (
         <View style={styles.container}>
-          <UserAccountScreen showToast={showToast} setToastContent={setToastContent} setUserCredentials={setUserCredentials} />
+          <UserAccountScreen showToast={showToast} setToastContent={setToastContent} />
           {tostNode}
         </View>
       )
     }
 
     return (
+      <CurrentUserContext.Provider value={{userCredentials}}>
           <View  style={styles.container}>
             <View style={styles.logo}>
               <Image source={require("../assets/T-minus.png")} style={styles.image} />
@@ -60,6 +84,7 @@ const LayoutScreen = ({ navigation }) => {
             
             {tostNode}
           </View>
+      </CurrentUserContext.Provider>
       );
 
   };

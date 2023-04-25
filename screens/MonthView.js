@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Image, SafeAreaView, ScrollView, ImageBackgroun
 import {Calendar, CalendarList, Agenda} from 'react-native-calendars';
 import moment from 'moment';
 import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
 import { TinitusCollectionName } from '../LocalDB/LocalDb';
 import { frequencyDistribution } from './helper/frequency';
 
@@ -11,14 +12,15 @@ const MonthView = ({ navigation }) => {
     const [selectedDate, setSelectedDate] = useState(new Date().toISOString().slice(0, 10));
     const [tinitusData, setTinitusData] = useState([]);
     const { db } = useContext(DBContext);
+    const { userCredentials } = useContext(CurrentUserContext);
 
     useEffect(() => {
       let subTinitus;
-      if (db && db[TinitusCollectionName]) {
+      if (db && userCredentials && db[TinitusCollectionName]) {
         subTinitus = db[TinitusCollectionName]
               .find({
                 selector: {
-                  userId: 1
+                  userId: userCredentials.email
                 }
               })
               .sort({ dateTime: 1 })
@@ -34,7 +36,7 @@ const MonthView = ({ navigation }) => {
       return () => {
           if (subTinitus && subTinitus.unsubscribe) subTinitus.unsubscribe();
       };
-  }, [db]);
+  }, []);
 
 
     const getEventsForDay = (date) => {

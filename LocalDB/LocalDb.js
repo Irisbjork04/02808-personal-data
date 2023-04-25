@@ -8,6 +8,8 @@ import {
 import TinitusSchema from './Schema/Tinitus';
 import NotesSchema from './Schema/Notes';
 import SleepSchema from './Schema/Sleep';
+import UserSchema from './Schema/User';
+import LocalSchema from './Schema/Local';
 import { tinitusSeed } from './seed/Tinitus'
 import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder';
 import { replicateCouchDB } from 'rxdb/plugins/replication-couchdb';
@@ -22,10 +24,14 @@ addRxPlugin(RxDBQueryBuilderPlugin);
 addRxPlugin(RxDBDevModePlugin); // for Devloment only
 
 const dbName = 'health-track';
-const syncURL = 'http://admin:strongpassword@'+Constants.expoConfig.extra.apiUrl; // Replace with your couchdb instance
-export const TinitusCollectionName = 'tinitus';
-export const SleepTimeCollectionName = 'sleeptime';
-export const NotesCollectionName = 'notes';
+// const syncURL = 'http://admin:strongpassword@'+Constants.expoConfig.extra.apiUrl; // Replace with your couchdb instance
+const syncURL = 'http://'+Constants.expoConfig.extra.apiUrl; // Replace with your couchdb instance
+export const TinitusCollectionName = Constants.expoConfig.extra.schema.TinitusCollection ;
+export const SleepTimeCollectionName = Constants.expoConfig.extra.schema.SleepTimeCollection;
+export const NotesCollectionName = Constants.expoConfig.extra.schema.NotesCollection;
+export const UserCollectionName = Constants.expoConfig.extra.schema.UserCollection;
+export const LocalCollectionName = Constants.expoConfig.extra.schema.LocalCollection;
+
 
 const initialize = async (withSeed = false) => {
     let db;
@@ -56,6 +62,12 @@ const initialize = async (withSeed = false) => {
             },
             [NotesCollectionName]: {
                 schema: NotesSchema,
+            },
+            [UserCollectionName]: {
+                schema: UserSchema,
+            },
+            [LocalCollectionName]: {
+                schema: LocalSchema,
             },
         });
         console.log('Collection added!');
@@ -103,6 +115,14 @@ const initialize = async (withSeed = false) => {
         const replicationNotesState = replicateCouchDB({
             collection: db[NotesCollectionName],
             url: `${syncURL}/${NotesCollectionName}/`,
+            fetch: fetch,
+            pull: {},
+            push: {}
+        });
+
+        const replicationUserState = replicateCouchDB({
+            collection: db[UserCollectionName],
+            url: `${syncURL}/${UserCollectionName}/`,
             fetch: fetch,
             pull: {},
             push: {}

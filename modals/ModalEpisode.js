@@ -5,6 +5,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
 import { TinitusCollectionName } from '../LocalDB/LocalDb';
 import Constants from 'expo-constants';
 
@@ -14,6 +15,7 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [datePickerVisible, setDatePickerVisible] = useState(false);
     const { db } = useContext(DBContext);
+    const { userCredentials } = useContext(CurrentUserContext);
 
     const showDatePicker = () => {
       setDatePickerVisible(true);
@@ -37,8 +39,9 @@ export default function ModalEpisodeAdd({ isVisible, children, onClose, showToas
 
     const saveOccurance = async () => {
       console.log("saved Tinitus orrcurence")
+      console.log(userCredentials)
       await db[TinitusCollectionName].insert({ 
-        userId: Constants.expoConfig.extra.userId,
+        userId: userCredentials.email,
         dateTime: selectedDate.toISOString(),
         notes: textvalue
        });

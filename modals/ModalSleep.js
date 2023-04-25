@@ -5,6 +5,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DBContext from '../LocalDB/DBContext';
+import CurrentUserContext from '../LocalDB/CurrentUserContext';
 import { SleepTimeCollectionName } from '../LocalDB/LocalDb';
 
 export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToast, setToastContent  }) {
@@ -15,6 +16,7 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
     const [selectedEndDate, setSelectedEndDate] = useState(new Date());
     const [dateEndPickerVisible, setEndDatePickerVisible] = useState(false);    
     const { db } = useContext(DBContext);
+    const { userCredentials } = useContext(CurrentUserContext);
 
     const showStartDatePicker = () => {
       setStartDatePickerVisible(true);
@@ -59,7 +61,7 @@ export default function ModalSleepHrsAdd({ isVisible, children, onClose, showToa
 
     const saveSleepTime = async () => {
       await db[SleepTimeCollectionName].insert({ 
-        userId: 1,
+        userId: userCredentials.email,
         startDateTime: selectedStartDate.toISOString(),
         endDateTime: selectedEndDate.toISOString()
        });

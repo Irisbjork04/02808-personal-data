@@ -17,7 +17,7 @@ const notesSchema = {
             maxLength: 100 
         },
         userId: {
-            type: 'number'
+            type: 'string'
         },
         dateTime: {
             type: 'string'
