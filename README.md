@@ -24,3 +24,28 @@ npx expo start
 ```
 docker compose down
 ```
+
+
+# Creating Android Installer APK
+
+## Reference
+- https://docs.expo.dev/build/setup/
+- https://docs.expo.dev/build-reference/apk/
+- https://docs.expo.dev/build-reference/simulators/
+
+### Configurarion needed for the first time:
+1. Create an expo user -> https://expo.dev/signup
+2. Install the latest EAS CLI  
+ ```npm install -g eas-cli```
+3. Login to expo account
+ ```eas login```
+4. Configure the project ```eas build:configure```
+
+### Create a installable apk for android
+ ```eas build -p android --profile preview```
+### Create a build for ios simulator
+ ```eas build -p ios --profile preview```
+
+
+
+
