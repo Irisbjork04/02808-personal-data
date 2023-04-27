@@ -54,11 +54,11 @@ const MonthView = ({ navigation }) => {
       const frequency = frequencyDistribution(dateArray);
 
       frequency.forEach(element => {
-        let selectedColor = '#fad2e1';
+        let selectedColor = '#FAD2E1';
         if(element.frequency <= 4) {
-          selectedColor = '#abc4ff';
+          selectedColor = '#ABC5FE';
         } else if(element.frequency <= 8) {
-          selectedColor = '#bee1e6';
+          selectedColor = '#BEE1E6';
         }
 
         markedDates[element.keyword] = {selected: true, marked: true, selectedColor: selectedColor};
@@ -76,14 +76,14 @@ const MonthView = ({ navigation }) => {
             <View style={styles.noteCalendarContainer}>
                 <Image source={require("../assets/circleicon.png")} style={styles.imageNote} />
                 <View style={{flex:2}}>
-                    <Text style={{fontSize: 12, fontWeight: "300", color: "#061428"}}>Circle sizes indicate the number of occurrences of tinnitus episodes in a day.</Text>
+                    <Text style={{fontSize: 12, fontWeight: "300", color: "#061428"}}>Circle colors indicate the number of occurrences of tinnitus episodes in a day</Text>
                 </View>              
             </View>
             <View style={styles.calendarContainer}> 
                 <CalendarList
                     style={{
                       borderColor: 'gray',
-                      height: 400,
+                      height: 600,
                     }}
                     pastScrollRange={24}
                     futureScrollRange={0}
