@@ -43,6 +43,11 @@ docker compose down
 
 ### Create a installable apk for android
  ```eas build -p android --profile preview```
+
+ - Once your build is completed, copy the URL to the APK from the build details page or the link provided when eas build is done.
+ - Send that URL to your device. Maybe by email? Up to you.
+ - Open the URL on your device, install the APK and run it.
+
 ### Create a build for ios simulator
  ```eas build -p ios --profile preview```
 

@@ -30,7 +30,7 @@ export default function App() {
     if (isMounted) {
       setTimeout(function () {
         setTimePassed(true);
-      }, 1000);
+      }, 5000);
     } else {
       setIsMounted(true);
     }

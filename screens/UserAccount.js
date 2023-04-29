@@ -48,7 +48,7 @@ export default function UserAccountScreen({showToast, setToastContent}) {
     return await db[UserCollectionName]
         .findOne({
           selector: {
-            email: email
+            email: email.toLowerCase()
           }
         })
         .exec();
@@ -57,7 +57,7 @@ export default function UserAccountScreen({showToast, setToastContent}) {
   const saveNewUser = async () => {
     console.log("saving new user")
     return await db[UserCollectionName].insert({ 
-      email: email,
+      email: email.toLowerCase(),
       name: name,
       password: "123456789"
      });
@@ -66,7 +66,7 @@ export default function UserAccountScreen({showToast, setToastContent}) {
   const saveCurrentUserToLocalStorage = async (user) => {
     console.log("saving current user to local storage")
     return await db[LocalCollectionName].insert({
-      email: user.email,
+      email: user.email.toLowerCase(),
       name: user.name,
       password: user.password
     });

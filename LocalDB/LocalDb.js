@@ -21,7 +21,7 @@ addRxPlugin(RxDBLeaderElectionPlugin);
 addRxPlugin(RxDBMigrationPlugin)
 addRxPlugin(RxDBUpdatePlugin)
 addRxPlugin(RxDBQueryBuilderPlugin);
-addRxPlugin(RxDBDevModePlugin); // for Devloment only
+// addRxPlugin(RxDBDevModePlugin); // for Devloment only
 
 const dbName = 'health-track';
 // const syncURL = 'http://admin:strongpassword@'+Constants.expoConfig.extra.apiUrl; // Replace with your couchdb instance
