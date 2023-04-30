@@ -185,7 +185,7 @@ const WeekView = ({ navigation }) => {
             // valuePrefix = 'Rs'
             valueSuffix = 'hrs'
             radius={80}
-            maxValue={8}
+            maxValue={60}
             duration={1000}
             title="Slept"
             titleStyle = {{fontSize: 20, fontWeight: "400", color: "#061428"}}
