@@ -141,13 +141,17 @@ const initialize = async (withSeed = false) => {
 
 
 const addSeedData = async (db) => {
-    for (const data of tinitusSeed) {
-        await db[TinitusCollectionName].insert(data);
+
+    for( var data in tinitusSeed) {
+        tinitusSeed[data].id = db[TinitusCollectionName].schema.getPrimaryOfDocumentData(tinitusSeed[data]);
+        await db[TinitusCollectionName].incrementalUpsert(tinitusSeed[data]);
     }
+
     console.log("Added tinitus Seed Data count:"+ tinitusSeed.length);
 
-    for (const data of sleepSeed) {
-        await db[SleepTimeCollectionName].insert(data);
+    for( var data in sleepSeed) {
+        sleepSeed[data].id = db[SleepTimeCollectionName].schema.getPrimaryOfDocumentData(sleepSeed[data]);
+        await db[SleepTimeCollectionName].incrementalUpsert(sleepSeed[data]);
     }
     console.log("Added Sleep Seed Data count:"+ sleepSeed.length);
 }
