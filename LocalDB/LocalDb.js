@@ -10,7 +10,8 @@ import NotesSchema from './Schema/Notes';
 import SleepSchema from './Schema/Sleep';
 import UserSchema from './Schema/User';
 import LocalSchema from './Schema/Local';
-import { tinitusSeed } from './seed/Tinitus'
+import { tinitusSeed } from './seed/Tinitus';
+import { sleepSeed } from './seed/Sleep';
 import { RxDBQueryBuilderPlugin } from 'rxdb/plugins/query-builder';
 import { replicateCouchDB } from 'rxdb/plugins/replication-couchdb';
 import { RxDBLeaderElectionPlugin } from 'rxdb/plugins/leader-election';
@@ -140,11 +141,14 @@ const initialize = async (withSeed = false) => {
 
 
 const addSeedData = async (db) => {
-    if(! await db[TinitusCollectionName].findOne().exec()) { // DB is empty
-        for (const data of tinitusSeed) {
-            await db[TinitusCollectionName].insert(data);
-        }
-        console.log("Added tinitus Seed Data count:"+ tinitusSeed.length);
+    for (const data of tinitusSeed) {
+        await db[TinitusCollectionName].insert(data);
     }
+    console.log("Added tinitus Seed Data count:"+ tinitusSeed.length);
+
+    for (const data of sleepSeed) {
+        await db[SleepTimeCollectionName].insert(data);
+    }
+    console.log("Added Sleep Seed Data count:"+ sleepSeed.length);
 }
 export default initialize;
