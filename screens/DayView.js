@@ -64,60 +64,6 @@ const DayView = ({ navigation }) => {
       };
   }, [date]);
 
-  // useEffect(() => { // multiinstance replication is not working, so using this hack to update the data
-  //   console.log("called with DB value:"+db);
-  //   let dataFetcher = setInterval(() => {
-  //     if(!db) {  
-  //       return;
-  //     }
-  //     // TinitusData Fetcher
-  //     let todayOccurences = [];
-  //     db[TinitusCollectionName]
-  //                 .find({
-  //                   selector: {
-  //                     userId: userCredentials.email
-  //                   }
-  //                 })
-  //                 .sort({ dateTime: 1 })
-  //                 .exec()
-  //                 .then(occurences => {
-  //                   // console.log(occurences)
-  //                   todayOccurences = occurences
-  //                   .filter( data => moment(data._data.dateTime).isSame(date, 'day'))
-  //                   .map( data => data._data);
-  //                 });
-
-  //     if(todayOccurences.length != tinitusData.length) {
-  //       setTinitusData(todayOccurences);
-  //     }
-
-  //     // SleepTimeData Fetcher
-  //     let todaySleepTimeOccurences = [];
-  //     let sleepTimeOccurences = db[SleepTimeCollectionName]
-  //                 .find({
-  //                   selector: {
-  //                     userId: userCredentials.email
-  //                   }
-  //                 })
-  //                 .sort({ endDateTime: 1 })
-  //                 .exec()
-  //                 .then(occurences => {
-  //                   // console.log(occurences)
-  //                   todaySleepTimeOccurences = occurences
-  //                   .filter( data => moment(data._data.endDateTime).isSame(date, 'day'))
-  //                   .map( data => data._data);
-  //                 });
-
-  //     if(todaySleepTimeOccurences.length != sleepTimeData.length) {
-  //       setSleepTimeData(todaySleepTimeOccurences);
-  //     }
-  //   }, 60000);
-
-  //   return () => {
-  //     clearInterval(dataFetcher);
-  //   };
-  // }, [db]);
-
   useEffect(() => {
     setWordCloudData(GenerateWordCloudData());
   }, [tinitusData]);
@@ -233,7 +179,9 @@ const DayView = ({ navigation }) => {
           withVerticalLabels = {true}
           withHorizontalLabels = {true}
           withInnerLines={true}
-          // showValuesOnTopOfBars={true}
+          fromZero={true}
+          showValuesOnTopOfBars={true}
+          showBarTops={true}
           chartConfig={{
             backgroundColor: '#ffffff',
             backgroundGradientFrom: '#ffffff',

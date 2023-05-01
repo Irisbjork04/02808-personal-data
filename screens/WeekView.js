@@ -223,7 +223,9 @@ const WeekView = ({ navigation }) => {
             withVerticalLabels = {true}
             withHorizontalLabels = {true}
             withInnerLines={true}
-            // showValuesOnTopOfBars={true}
+            fromZero={true}
+            showValuesOnTopOfBars={true}
+            showBarTops={true}
             chartConfig={{
               backgroundColor: '#ffffff',
               backgroundGradientFrom: '#ffffff',

@@ -8,11 +8,7 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@chartiful/react-native-chart-builder": "^0.1.8",
-    "@chartiful/react-native-vertical-bar-graph": "^0.1.2",
     "@expo/webpack-config": "^18.0.4",
-    "@observablehq/how-to-embed-a-notebook-in-a-react-app": "https://api.observablehq.com/@observablehq/how-to-embed-a-notebook-in-a-react-app.tgz?v=3",
-    "@observablehq/runtime": "^5.6.0",
     "@react-native-community/datetimepicker": "6.7.3",
     "@react-navigation/bottom-tabs": "^6.5.7",
     "@react-navigation/material-top-tabs": "^6.6.2",
@@ -34,7 +30,7 @@
     "react-native-gesture-handler": "^2.9.0",
     "react-native-linear-gradient": "^2.6.2",
     "react-native-modal-datetime-picker": "^15.0.0",
-    "react-native-pager-view": "^6.1.2",
+    "react-native-pager-view": "6.1.2",
     "react-native-reanimated": "~2.14.4",
     "react-native-redash": "^18.1.0",
     "react-native-root-toast": "^3.4.1",
