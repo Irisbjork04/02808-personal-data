@@ -2,7 +2,7 @@
   "expo": {
     "name": "tminus",
     "slug": "tminus",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/T-minus.png",
     "userInterfaceStyle": "automatic",
@@ -32,12 +32,19 @@
     "extra": {
       "userId": "johndoe@gmail.com",
       "apiUrl": "my-azcdb-health-track.westeurope.azurecontainer.io:5984",
+      // "schema": {
+      //   "TinitusCollection": "tinitus-dev",
+      //   "SleepTimeCollection": "sleeptime-dev",
+      //   "NotesCollection": "notes-dev",
+      //   "UserCollection": "user-dev",
+      //   "LocalCollection": "local-dev"
+      // },
       "schema": {
-        "TinitusCollection": "tinitus-dev",
-        "SleepTimeCollection": "sleeptime-dev",
-        "NotesCollection": "notes-dev",
-        "UserCollection": "user-dev",
-        "LocalCollection": "local-dev"
+        "TinitusCollection": "tinitus-sit",
+        "SleepTimeCollection": "sleeptime-sit",
+        "NotesCollection": "notes-sit",
+        "UserCollection": "user-sit",
+        "LocalCollection": "local-sit"
       },
       "eas": {
         "projectId": "8730cff3-293e-47b3-b0a0-32bc2db9f27c"

@@ -64,60 +64,6 @@ const DayView = ({ navigation }) => {
       };
   }, [date]);
 
-  // useEffect(() => { // multiinstance replication is not working, so using this hack to update the data
-  //   console.log("called with DB value:"+db);
-  //   let dataFetcher = setInterval(() => {
-  //     if(!db) {  
-  //       return;
-  //     }
-  //     // TinitusData Fetcher
-  //     let todayOccurences = [];
-  //     db[TinitusCollectionName]
-  //                 .find({
-  //                   selector: {
-  //                     userId: userCredentials.email
-  //                   }
-  //                 })
-  //                 .sort({ dateTime: 1 })
-  //                 .exec()
-  //                 .then(occurences => {
-  //                   // console.log(occurences)
-  //                   todayOccurences = occurences
-  //                   .filter( data => moment(data._data.dateTime).isSame(date, 'day'))
-  //                   .map( data => data._data);
-  //                 });
-
-  //     if(todayOccurences.length != tinitusData.length) {
-  //       setTinitusData(todayOccurences);
-  //     }
-
-  //     // SleepTimeData Fetcher
-  //     let todaySleepTimeOccurences = [];
-  //     let sleepTimeOccurences = db[SleepTimeCollectionName]
-  //                 .find({
-  //                   selector: {
-  //                     userId: userCredentials.email
-  //                   }
-  //                 })
-  //                 .sort({ endDateTime: 1 })
-  //                 .exec()
-  //                 .then(occurences => {
-  //                   // console.log(occurences)
-  //                   todaySleepTimeOccurences = occurences
-  //                   .filter( data => moment(data._data.endDateTime).isSame(date, 'day'))
-  //                   .map( data => data._data);
-  //                 });
-
-  //     if(todaySleepTimeOccurences.length != sleepTimeData.length) {
-  //       setSleepTimeData(todaySleepTimeOccurences);
-  //     }
-  //   }, 60000);
-
-  //   return () => {
-  //     clearInterval(dataFetcher);
-  //   };
-  // }, [db]);
-
   useEffect(() => {
     setWordCloudData(GenerateWordCloudData());
   }, [tinitusData]);
@@ -163,13 +109,17 @@ const DayView = ({ navigation }) => {
 
     totalSleepTime = Math.trunc(totalSleepTime); // Remove decimal part
     return (
-      <View>
+      <View style={{alignItems: "center", justifyContent: "center"}}>
+        <View style={{flexDirection:"row", alignItems: "center", justifyContent: "center", marginBottom: 16}}>
+          <Image source={require("../assets/sleep.png")} style={styles.image} />
+          <Text style={{marginHorizontal: 8}}>Daily sleep goal 8 hrs</Text>
+        </View>
         <CircularProgress
           value={totalSleepTime}
           // valuePrefix = 'Rs'
           valueSuffix = 'hrs'
           radius={80}
-          maxValue={8}
+          maxValue={12}
           duration={1000}
           title="Slept"
           titleStyle = {{fontSize: 20, fontWeight: "400", color: "#061428"}}
@@ -233,7 +183,9 @@ const DayView = ({ navigation }) => {
           withVerticalLabels = {true}
           withHorizontalLabels = {true}
           withInnerLines={true}
-          // showValuesOnTopOfBars={true}
+          fromZero={true}
+          showValuesOnTopOfBars={true}
+          showBarTops={true}
           chartConfig={{
             backgroundColor: '#ffffff',
             backgroundGradientFrom: '#ffffff',
@@ -318,7 +270,7 @@ const DayView = ({ navigation }) => {
                 <Image source={require("../assets/dayWordCloud.png")} style={styles.wordcloudImage} />
               </View>
               <View style={{flex:1, justifyContent:"center", alignItems: "center"}}>
-                <Cloud keywords={wordCloudData} scale={500} largestAtCenter={true} drawContainerCircle={false} containerCircleColor={'#ffffff'}/>
+                <Cloud keywords={wordCloudData} scale={200} largestAtCenter={true} drawContainerCircle={false} containerCircleColor={'#ffffff'}/>
               </View>
             </View>
           </ScrollView>        
