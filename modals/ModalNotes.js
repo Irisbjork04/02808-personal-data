@@ -1,3 +1,4 @@
+import React, { Component, useState, useContext, useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar'; //This is a component that we can use to show the status bar at the top of the screen
 import { StyleSheet, Text, View, Image, SafeAreaView, ImageBackground, Modal, Pressable } from 'react-native';  //Importing the components we need
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';

@@ -109,13 +109,17 @@ const DayView = ({ navigation }) => {
 
     totalSleepTime = Math.trunc(totalSleepTime); // Remove decimal part
     return (
-      <View>
+      <View style={{alignItems: "center", justifyContent: "center"}}>
+        <View style={{flexDirection:"row", alignItems: "center", justifyContent: "center", marginBottom: 16}}>
+          <Image source={require("../assets/sleep.png")} style={styles.image} />
+          <Text style={{marginHorizontal: 8}}>Daily sleep goal 8 hrs</Text>
+        </View>
         <CircularProgress
           value={totalSleepTime}
           // valuePrefix = 'Rs'
           valueSuffix = 'hrs'
           radius={80}
-          maxValue={8}
+          maxValue={12}
           duration={1000}
           title="Slept"
           titleStyle = {{fontSize: 20, fontWeight: "400", color: "#061428"}}
@@ -266,7 +270,7 @@ const DayView = ({ navigation }) => {
                 <Image source={require("../assets/dayWordCloud.png")} style={styles.wordcloudImage} />
               </View>
               <View style={{flex:1, justifyContent:"center", alignItems: "center"}}>
-                <Cloud keywords={wordCloudData} scale={500} largestAtCenter={true} drawContainerCircle={false} containerCircleColor={'#ffffff'}/>
+                <Cloud keywords={wordCloudData} scale={200} largestAtCenter={true} drawContainerCircle={false} containerCircleColor={'#ffffff'}/>
               </View>
             </View>
           </ScrollView>        

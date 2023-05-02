@@ -42,7 +42,7 @@ const LayoutScreen = ({ navigation }) => {
 
       setTimeout(() => { 
           setToastVisible(false); 
-      }, 4000);
+      }, 3000);
     };
 
     const tostNode = (

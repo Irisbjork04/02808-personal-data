@@ -55,9 +55,9 @@ const MonthView = ({ navigation }) => {
 
       frequency.forEach(element => {
         let selectedColor = '#FAD2E1';
-        if(element.frequency <= 3) {
+        if(element.frequency <= 8) {
           selectedColor = '#ABC5FE';
-        } else if(element.frequency <= 5) {
+        } else if(element.frequency <= 14) {
           selectedColor = '#BEE1E6';
         }
 
