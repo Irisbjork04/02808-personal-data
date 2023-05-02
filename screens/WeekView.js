@@ -64,58 +64,7 @@ const WeekView = ({ navigation }) => {
         };
     }, [date]);
 
-    // useEffect(() => { // multiinstance replication is not working, so using this hack to update the data
-    //   let dataFetcher = setInterval(() => {
-    //     if(!db) {  
-    //       return;
-    //     }
-    //     // TinitusData Fetcher
-    //     let todayOccurences = [];
-    //     db[TinitusCollectionName]
-    //           .find({
-    //             selector: {
-    //               userId: userCredentials.email
-    //             }
-    //           })
-    //           .sort({ dateTime: 1 })
-    //           .exec()
-    //           .then(occurences => {
-    //             // console.log(occurences);
-    //             todayOccurences = occurences.filter( data => moment(data._data.dateTime).isSame(date, 'week'))
-    //               .map( data => data._data);
-    //           });
 
-                    
-  
-    //     if(todayOccurences.length != tinitusData.length) {
-    //       setTinitusData(todayOccurences);
-    //     }
-
-    //     // SleepTimeData Fetcher
-    //     let todaySleepTimes = [];
-    //     db[SleepTimeCollectionName]
-    //         .find({
-    //           selector: {
-    //             userId: userCredentials.email
-    //           }
-    //         })
-    //         .sort({ endDateTime: 1 })
-    //         .exec()
-    //         .then(sleepTimes => {
-    //           // console.log(sleepTimes);
-    //           todaySleepTimes = sleepTimes.filter( data => moment(data._data.endDateTime).isSame(date, 'week'))
-    //             .map( data => data._data);
-    //         });
-
-    //     if(todaySleepTimes.length != sleepTimeData.length) {
-    //       setSleepTimeData(todaySleepTimes);
-    //     }
-    //   }, 60000);
-  
-    //   return () => {
-    //     clearInterval(dataFetcher);
-    //   };
-    // }, [db]);
 
     useEffect(() => {
       setWordCloudData(GenerateWordCloudData());
@@ -164,8 +113,8 @@ const WeekView = ({ navigation }) => {
 
       tinitusData
         .forEach( d => {
-          let day = moment(d.dateTime).isoWeekday();
-          data[day-1] = data[day-1] + 1;
+          let day = moment(d.dateTime).weekday();
+          data[day] = data[day] + 1;
         });
       
       return data;
@@ -175,7 +124,25 @@ const WeekView = ({ navigation }) => {
       let totalSleepTime = sleepTimeData.reduce((acc, data) => {
         return acc + moment(data.endDateTime).diff(moment(data.startDateTime)); 
       }, 0) / (1000 * 60 * 60);
-  
+      
+      // console.log("weekview: isoweekday: " + moment().weekday() + " totalSleepTime: " + totalSleepTime );
+
+      // If current week, calculate average sleep time per day
+      if(moment(date).isSame(new Date(), 'week')) {
+        let days = moment().weekday();
+
+        sleepTimeData.filter( data => moment(data.endDateTime).isSame(moment(), 'day')).length > 0 ? days++ : days;
+
+        if(days == 0) {
+          days = 1;
+        }
+
+        totalSleepTime = totalSleepTime / days;
+        
+      } else {
+        totalSleepTime = totalSleepTime / 7; // Average sleep time per day
+      }
+      
       totalSleepTime = Math.trunc(totalSleepTime); // Remove decimal part
 
       return (
@@ -183,9 +150,9 @@ const WeekView = ({ navigation }) => {
           <CircularProgress
             value={totalSleepTime}
             // valuePrefix = 'Rs'
-            valueSuffix = 'hrs'
+            valueSuffix = 'Avg.hrs'
             radius={80}
-            maxValue={60}
+            maxValue={8}
             duration={1000}
             title="Slept"
             titleStyle = {{fontSize: 20, fontWeight: "400", color: "#061428"}}
@@ -209,7 +176,7 @@ const WeekView = ({ navigation }) => {
           </View>
           <BarChart
             data={{
-              labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+              labels: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
               datasets: [
                 {
                   data: MyBarchartData(),
