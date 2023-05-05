@@ -1,4 +1,4 @@
-# 02808-personal-data
+# T-Minus
 
 This repository is the source code for a functional application developed for the course 02808 Personal Data Interaction for Mobile and Wearables at DTU.
 
