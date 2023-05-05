@@ -1,6 +1,6 @@
 # 02808-personal-data
 
-# hello
+This repository is the source code for a functional application developed for the course 02808 Personal Data Interaction for Mobile and Wearables at DTU.
 
 # Devlopment RUN
 ## SetUP
