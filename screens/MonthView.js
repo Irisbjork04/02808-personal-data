@@ -56,9 +56,9 @@ const MonthView = ({ navigation }) => {
       frequency.forEach(element => {
         let selectedColor = '#FAD2E1';
         if(element.frequency <= 8) {
-          selectedColor = '#ABC5FE';
-        } else if(element.frequency <= 14) {
           selectedColor = '#BEE1E6';
+        } else if(element.frequency <= 14) {
+          selectedColor = '#ABC5FE';
         }
 
         markedDates[element.keyword] = {selected: true, marked: true, selectedColor: selectedColor};
@@ -74,16 +74,16 @@ const MonthView = ({ navigation }) => {
               <Text style={{fontSize: 16, fontWeight: "500", color: "#061428"}}>Insights</Text>
             </View>
             <View style={styles.noteCalendarContainer}>
-                <Image source={require("../assets/circleicon.png")} style={styles.imageNote} />
-                <View style={{flex:2}}>
-                    <Text style={{fontSize: 12, fontWeight: "300", color: "#061428"}}>Circle colors indicate the number of occurrences of tinnitus episodes in a day</Text>
-                </View>              
+              <Image source={require("../assets/circleicon.png")} style={styles.imageNote} />
+              <View style={{flex:2}}>
+                  <Text style={{fontSize: 12, fontWeight: "300", color: "#061428"}}>Circle colors indicate the number of occurrences of tinnitus episodes in a day. The colors refer the min(green), median(blue) and the max(red) no. of occurences</Text>
+              </View>              
             </View>
             <View style={styles.calendarContainer}> 
                 <CalendarList
                     style={{
                       borderColor: 'gray',
-                      height: 600,
+                      height: 800,
                     }}
                     pastScrollRange={24}
                     futureScrollRange={0}
@@ -116,21 +116,21 @@ const MonthView = ({ navigation }) => {
         flex: 8,
       },
       calendarContainer:{
-        flex: 14,
+        flex: 180,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
-        borderBottomWidth: 1,
-        borderBottomColor: '#E8F3F1'
+        // borderBottomWidth: 1,
+        // borderBottomColor: '#E8F3F1'
       },
       insightContainer: {
-        flex: 2,
+        flex: 20,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
       },
       noteCalendarContainer: {
-        flex: 2,      
+        flex: 20,      
         flexDirection: 'row',
         marginHorizontal: 10,
         marginVertical: 4,
