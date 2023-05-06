@@ -1,6 +1,6 @@
 # T-Minus
 
-This repository is the source code for a functional application developed for the course 02808 Personal Data Interaction for Mobile and Wearables at DTU. We are a group of 3 students developing a personal informatics system. Our solution is a tracking system for tinnitus episodes. to find the pattern in occurrences and its relation or impact on their sleep by daily, weekly, and monthly.
+This repository is the source code for a functional application developed for the course 02808 Personal Data Interaction for Mobile and Wearables at DTU. We are a group of 3 students developing a personal informatics system. Our solution is a tracking system for tinnitus episodes. The goal is for users to find the pattern in occurrences and its relation or impact on their sleep.
 
 # Devlopment RUN
 ## SetUP
