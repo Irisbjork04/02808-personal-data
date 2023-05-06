@@ -1,6 +1,6 @@
 # T-Minus
 
-This repository is the source code for a functional application developed for the course 02808 Personal Data Interaction for Mobile and Wearables at DTU.
+This repository is the source code for a functional application developed for the course 02808 Personal Data Interaction for Mobile and Wearables at DTU. We are a group of 3 students developing a personal informatics system. Our solution is a tracking system for tinnitus episodes. to find the pattern in occurrences and its relation or impact on their sleep by daily, weekly, and monthly.
 
 # Devlopment RUN
 ## SetUP
@@ -13,14 +13,15 @@ docker compose up -d
 
 ## To run Using Expo Go
 1. Open Terminal inside project root directory
-2. Run below command
+1. If it is your first time setting up the project then run ```npm install```
+1. Run below command
 ```
 npx expo start
 ```
 ## Teardown
 ## When you want to Stop Database
 1. Go to docker folder inside the project directory and open terminal
-2. Run below command
+2. Run below command and follow the instruction
 ```
 docker compose down
 ```
